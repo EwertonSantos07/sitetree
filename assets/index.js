@@ -2667,7 +2667,7 @@
                 })
             }
 
-            console.log("A página foi completamente carregada");
+            console.log("RT Transporte Executivo - v.1.0.0");
             console.log(Date()); 
 
         })
