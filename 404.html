@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Redirecionando...</title>
+    <script type="text/javascript">
+
+        // Obtém o caminho da URL que causou o erro 404
+        const path = window.location.pathname;
+
+        // Redireciona de volta para a página inicial, mantendo o caminho original
+        const basePath = '/sitetree/';
+        window.location.href = basePath + (path === basePath ? '' : path.substring(basePath.length));
+    </script>
+</head>
+<body>
+    <p>Página não encontrada. Redirecionando...</p>
+</body>
+</html>

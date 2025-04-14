@@ -4,15 +4,24 @@
 
     console.log("Iniciando JavaScript")
 
-    //Iniciando Sistema com tela de carregamento...
-    document.addEventListener('DOMContentLoaded', function() {
-        const loadingScreen = document.querySelector('.loading-screen');
-        loadingScreen.style.cursor = 'wait';
-        loadingScreen.style.display = 'flex';
-        loadingScreen.style.opacity = '1';
-        loadingScreen.style.left = '0';
-        console.log("Tela de Carregamento ativo...")
-    });
+    //Função para rotear links
+    async function roteadorLink(path) {
+        return new Promise((resolve) => {
+            console.log("Iniciando Roteador de Links: ", path);
+
+            //Definindo nome do caminho a ser redirecionado
+            const lastSlashIndex = path.lastIndexOf('/');
+            let nomePagina = path;
+            if (lastSlashIndex !== -1) {
+                nomePagina = path.substring(lastSlashIndex + 1);
+            }
+        
+            // Atualizar a URL na barra de endereços (usando o nome da página)
+            const newUrl = `/assets/${nomePagina.split('.')[0]}`; // Remove a extensão
+            window.history.pushState({ path: nomePagina.split('.')[0] }, '', newUrl);
+            resolve(newUrl);
+        })
+    }
 
     //Função para alterar propriedades CSS Menu Oculto em Loading...
     async function changeCSSOculto(listOculto) {
@@ -55,8 +64,17 @@
     }
 
     //Função para abrir tela de carregamento
-    async function showLoadingScreen() {
+    async function showLoadingScreen(operationID) {
         return new Promise((resolve) => {
+
+            //Atualizando url navegador Loading... temporário
+            console.log("Tela de carregamento para: ", operationID);
+            const loadingUrl = `${window.location.pathname}?loading=true&target=${encodeURIComponent(operationID)}`;
+            const newState = { loading: true, target: operationID };
+            const newTitle = 'Carregando...';
+            window.history.pushState(newState, newTitle, loadingUrl);
+
+            //Exibindo tela de Carregamento...
             const loadingScreen = document.querySelector('.loading-screen');
             loadingScreen.style.cursor = 'wait';
             loadingScreen.style.display = 'flex';
@@ -80,8 +98,14 @@
     };
 
     //Função para fechar tela de carregamento
-    async function offLoadingScreen() {
+    async function offLoadingScreen(operationID) {
         return new Promise((resolve) => {
+
+            //Atualizar URL target final após carregamento
+            const newState = { page: operationID.substring(1) }; // Remove a barra inicial
+            const newTitle = '';
+            window.history.replaceState(newState, newTitle, operationID);
+
             const loadingScreen = document.querySelector('.loading-screen');
             setTimeout(() => {
                 loadingScreen.style.opacity = '0';
@@ -137,7 +161,7 @@
     async function atualizaIframe(path) {
         return new Promise((resolve) => {
             let iframe = document.querySelector(".iframe");
-            iframe.src = path;
+            iframe.src = path; 
             console.log(iframe.src);
             if (iframe) {
                 iframe.onload = function(){
@@ -528,10 +552,15 @@
         })
 
     }
-    
-    window.addEventListener("resize", function() {
-        alteraAlturaIframe();
-        console.log("Altura iframe redefinida sem carregamento!"); 
+
+    //Iniciando Sistema com tela de carregamento...
+    document.addEventListener('DOMContentLoaded', function() {
+        const loadingScreen = document.querySelector('.loading-screen');
+        loadingScreen.style.cursor = 'wait';
+        loadingScreen.style.display = 'flex';
+        loadingScreen.style.opacity = '1';
+        loadingScreen.style.left = '0';
+        console.log("Tela de Carregamento ativo...")
     });
 
     window.addEventListener("load", function() {
@@ -622,8 +651,6 @@
                 }, 900);
             }, 900);
 
-
-            console.log("A página foi completamente carregada."); 
 
             //Capturando click BTN OPEN MENU - MENU OCULTO
             if (btnOpenMenu) {
@@ -1504,16 +1531,27 @@
             if (nav_sobre) {
                 nav_sobre.addEventListener("click", async function(event) {
                     console.clear();
-                    event.preventDefault();
+                    console.log(Date());
 
-                    let nameID = "SOBRE";
+                    //Capturando data-link
+                    let nameID = nav_sobre.dataset.link;
+                    console.log("Iniciando Operações", nameID)
 
                     //Iniciando tela de carregamento
-                    const statusLoading = await showLoadingScreen();
+                    const statusLoading = await showLoadingScreen(nameID);
                     console.log(statusLoading, nameID);
 
+                    //Infos de origem, diretórios
+                    const origemDir = window.location.origin; //Domínio
+                    let pathAtual = window.location.pathname; //Pasta Atual
+                    console.log(origemDir, "Domínio");
+                    console.log(pathAtual, "Diretório Atual");
+
+                    //Caminho para atualização DOM
+                    let SRCiframe = `assets/${nameID}.html`;
+                    console.log(SRCiframe, "Caminho para Atualizar DOM");
+
                     //Atualizando Documentação iFrame
-                    let SRCiframe = "../assets/sobre.html"
                     const statusIframe = await atualizaIframe(SRCiframe);
                     console.log(statusIframe, nameID);
 
@@ -1538,7 +1576,7 @@
                     }
 
                     //Encerrando Screen Loading...
-                    const statusOff = await offLoadingScreen();
+                    const statusOff = await offLoadingScreen(nameID);
                     console.log(statusOff, nameID);
                     console.log(`Botão ${nameID} nav bar pronto!`);
                 })
@@ -2629,6 +2667,14 @@
                 })
             }
 
+            console.log("A página foi completamente carregada");
+            console.log(Date()); 
+
         })
+    });
+
+    window.addEventListener("resize", function() {
+        alteraAlturaIframe();
+        console.log("Altura iframe redefinida sem carregamento!"); 
     });
 })()
