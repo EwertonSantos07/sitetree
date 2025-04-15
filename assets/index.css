@@ -191,7 +191,7 @@ header {
     padding: 0;
     padding-top: 1px;
     transition-duration: 0.8s;
-    cursor: text;
+    cursor: pointer;
 }
 
 .dropdown-content {
@@ -203,12 +203,12 @@ header {
         rgba(0,0,0,0.2);
     z-index: 1;
     transition-duration: 0.8s;
+    cursor: pointer;
 }
 
 .navbar-dropbtn:hover {
     color: #d2aa70;
     transition-duration: 0.8s;
-    cursor: text;
 }
 
 .navbar-dropdown:hover .dropdown-content {

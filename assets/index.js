@@ -4,22 +4,48 @@
 
     console.log("Iniciando JavaScript")
 
-    //Função para rotear links
-    async function roteadorLink(path) {
+    //Função para rotear links e alterar estados da url
+    async function roteadorURL(keyValue, pathURL) {
         return new Promise((resolve) => {
-            console.log("Iniciando Roteador de Links: ", path);
 
-            //Definindo nome do caminho a ser redirecionado
-            const lastSlashIndex = path.lastIndexOf('/');
-            let nomePagina = path;
-            if (lastSlashIndex !== -1) {
-                nomePagina = path.substring(lastSlashIndex + 1);
+            //Infos de origem, diretórios
+            // const origemDir = window.location.origin; //Domínio
+            // let pathAtual = window.location.pathname; //Pasta Atual
+            // console.log(origemDir, "Domínio");
+            // console.log(pathAtual, "Diretório Atual");
+
+            //Redirecionando de acordo com a chave da operação
+            if(keyValue == 0) {
+
+                //Atualizando url navegador ao iniciar site ou atualizar página
+                if(pathURL == "/rg-transporte-executivo/") {
+                    const homeUrl = `${window.location.pathname}home`;
+                    const newState = {page: 'home'};
+                    const newTitle = 'home';
+                    window.history.pushState(newState, newTitle, homeUrl);
+                    console.log("Site foi atualizado com url padrão!!!")
+                } else {
+                    const homeUrl = "/rg-transporte-executivo/home";
+                    const newState = {page: 'home'};
+                    const newTitle = 'home';
+                    window.history.pushState(newState, newTitle, homeUrl);
+                    console.log("Site foi atualizado com url diferente do inicial!")
+                }
+
+            } else if(keyValue == 1) {
+                const targetUrl = pathURL;
+                let parts = pathURL.split('/');
+                let lastPart = parts.pop() || parts.pop();
+                const newState = {page: lastPart};
+                const newTitle = lastPart;
+                window.history.pushState(newState, newTitle, targetUrl);
+                console.log("Operação para páginas internas!!!");
             }
-        
-            // Atualizar a URL na barra de endereços (usando o nome da página)
-            const newUrl = `/assets/${nomePagina.split('.')[0]}`; // Remove a extensão
-            window.history.pushState({ path: nomePagina.split('.')[0] }, '', newUrl);
-            resolve(newUrl);
+
+            console.log(keyValue, "Key Value");
+            console.log(window.history.state)
+            let statusURL = "URL foi atualizada";
+            resolve(statusURL);
         })
     }
 
@@ -67,13 +93,6 @@
     async function showLoadingScreen(operationID) {
         return new Promise((resolve) => {
 
-            //Atualizando url navegador Loading... temporário
-            console.log("Tela de carregamento para: ", operationID);
-            const loadingUrl = `${window.location.pathname}?loading=true&target=${encodeURIComponent(operationID)}`;
-            const newState = { loading: true, target: operationID };
-            const newTitle = 'Carregando...';
-            window.history.pushState(newState, newTitle, loadingUrl);
-
             //Exibindo tela de Carregamento...
             const loadingScreen = document.querySelector('.loading-screen');
             loadingScreen.style.cursor = 'wait';
@@ -100,11 +119,6 @@
     //Função para fechar tela de carregamento
     async function offLoadingScreen(operationID) {
         return new Promise((resolve) => {
-
-            //Atualizar URL target final após carregamento
-            const newState = { page: operationID.substring(1) }; // Remove a barra inicial
-            const newTitle = '';
-            window.history.replaceState(newState, newTitle, operationID);
 
             const loadingScreen = document.querySelector('.loading-screen');
             setTimeout(() => {
@@ -563,12 +577,17 @@
         console.log("Tela de Carregamento ativo...")
     });
 
-    window.addEventListener("load", function() {
+    window.addEventListener("load", async function() {
 
         //Capturando largura da tela!!!
         const larguraScreen = screen.width;
         console.log("Width Screen Start:", larguraScreen, "px");
-        //console.clear();
+
+        //Iniciando roteador de URL
+        let opValue = 0;
+        const statusURL = await roteadorURL(opValue, window.location.pathname);
+        console.log(statusURL);
+        
         alteraAlturaIframe().then((x) => {
 
             //Declarando constantes de ambiente!!!
@@ -651,6 +670,10 @@
                 }, 900);
             }, 900);
 
+            window.addEventListener('popstate', function(event) {
+                window.location.reload();
+            }, false);
+
 
             //Capturando click BTN OPEN MENU - MENU OCULTO
             if (btnOpenMenu) {
@@ -689,16 +712,27 @@
             if (linkHomeOculto) {
                 linkHomeOculto.addEventListener("click", async function(event) {
                     console.clear();
-                    event.preventDefault();
+                    console.log(Date());
 
-                    let nameID = "HOME";
+                    //Capturando data-link
+                    let nameID = linkHomeOculto.dataset.link;
+                    console.log("Iniciando Operações", nameID)
 
                     //Alterando propriedades Menu Oculto
                     const statusMOculto = await changeCSSOculto(ocultArray);
                     console.log(statusMOculto, nameID);
 
+                    //Iniciando roteador de URL
+                    let keyValue = 1;
+                    let urlID = `/rg-transporte-executivo/${nameID}`;
+                    const statusURL = await roteadorURL(keyValue, urlID);
+                    console.log(statusURL);
+
+                    //Caminho para atualização DOM
+                    let SRCiframe = `assets/${nameID}.html`;
+                    console.log(SRCiframe, "Caminho para Atualizar DOM");
+
                     //Atualizando Documentação iFrame
-                    let SRCiframe = "../assets/home.html"
                     const statusIframe = await atualizaIframe(SRCiframe);
                     console.log(statusIframe, nameID);
 
@@ -742,19 +776,28 @@
 
                     if (linkTransFrame) {
                         linkTransFrame.addEventListener("click", async function(event) {
-                            //window.alert(`Link AÇÃO Transfer foi acionado!`)
-
                             console.clear();
-                            event.preventDefault();
+                            console.log(Date());
 
-                            let nameID = "TRANSFER";
+                            //Capturando data-link
+                            let nameID = linkTransFrame.dataset.link;
+                            console.log("Iniciando Operações", nameID)
 
                             //Iniciando tela de carregamento
-                            const statusLoading = await showLoadingScreen();
+                            const statusLoading = await showLoadingScreen(nameID);
                             console.log(statusLoading, nameID);
 
+                            //Iniciando roteador de URL
+                            let keyValue = 1;
+                            let urlID = `/rg-transporte-executivo/${nameID}`;
+                            const statusURL = await roteadorURL(keyValue, urlID);
+                            console.log(statusURL);
+
+                            //Caminho para atualização DOM
+                            let SRCiframe = `assets/${nameID}.html`;
+                            console.log(SRCiframe, "Caminho para Atualizar DOM");
+
                             //Atualizando Documentação iFrame
-                            let SRCiframe = "../assets/transfer-aeroporto.html"
                             const statusIframe = await atualizaIframe(SRCiframe);
                             console.log(statusIframe, nameID);
 
@@ -781,25 +824,34 @@
                             //Encerrando Screen Loading...
                             const statusOff = await offLoadingScreen();
                             console.log(statusOff, nameID);
-                            console.log(`Link ${nameID} frame pronto!`);
+                            console.log(`Link frame ${nameID} from home menu oculto pronto!`);
                         })
                     }
 
                     if (linkViagFrame) {
                         linkViagFrame.addEventListener("click", async function(event) {
-                            //window.alert(`Link AÇÃO Viagem foi acionado!`)
-
                             console.clear();
-                            event.preventDefault();
+                            console.log(Date());
 
-                            let nameID = "VIAGENS";
+                            //Capturando data-link
+                            let nameID = linkViagFrame.dataset.link;
+                            console.log("Iniciando Operações", nameID)
 
                             //Iniciando tela de carregamento
-                            const statusLoading = await showLoadingScreen();
+                            const statusLoading = await showLoadingScreen(nameID);
                             console.log(statusLoading, nameID);
 
+                            //Iniciando roteador de URL
+                            let keyValue = 1;
+                            let urlID = `/rg-transporte-executivo/${nameID}`;
+                            const statusURL = await roteadorURL(keyValue, urlID);
+                            console.log(statusURL);
+
+                            //Caminho para atualização DOM
+                            let SRCiframe = `assets/${nameID}.html`;
+                            console.log(SRCiframe, "Caminho para Atualizar DOM");
+
                             //Atualizando Documentação iFrame
-                            let SRCiframe = "../assets/viagens-executivas.html"
                             const statusIframe = await atualizaIframe(SRCiframe);
                             console.log(statusIframe, nameID);
 
@@ -826,25 +878,34 @@
                             //Encerrando Screen Loading...
                             const statusOff = await offLoadingScreen();
                             console.log(statusOff, nameID);
-                            console.log(`Link ${nameID} frame pronto!`);
+                            console.log(`Link frame${nameID} from home menu oculto pronto!`);
                         })
                     }
 
                     if (linkPacoFrame) {
                         linkPacoFrame.addEventListener("click", async function(event) {
-                            //window.alert(`Link AÇÃO Paco foi acionado!`)
-
                             console.clear();
-                            event.preventDefault();
+                            console.log(Date());
 
-                            let nameID = "PACOTES";
+                            //Capturando data-link
+                            let nameID = linkPacoFrame.dataset.link;
+                            console.log("Iniciando Operações", nameID)
 
                             //Iniciando tela de carregamento
-                            const statusLoading = await showLoadingScreen();
+                            const statusLoading = await showLoadingScreen(nameID);
                             console.log(statusLoading, nameID);
 
+                            //Iniciando roteador de URL
+                            let keyValue = 1;
+                            let urlID = `/rg-transporte-executivo/${nameID}`;
+                            const statusURL = await roteadorURL(keyValue, urlID);
+                            console.log(statusURL);
+
+                            //Caminho para atualização DOM
+                            let SRCiframe = `assets/${nameID}.html`;
+                            console.log(SRCiframe, "Caminho para Atualizar DOM");
+
                             //Atualizando Documentação iFrame
-                            let SRCiframe = "../assets/pacotes-turisticos.html"
                             const statusIframe = await atualizaIframe(SRCiframe);
                             console.log(statusIframe, nameID);
 
@@ -889,25 +950,34 @@
                             //Encerrando Screen Loading...
                             const statusOff = await offLoadingScreen();
                             console.log(statusOff, nameID);
-                            console.log(`Link ${nameID} frame pronto!`);
+                            console.log(`Link frame ${nameID} from home menu oculto pronto!`);
                         })
                     }
 
                     if (linkPassFrame) {
                         linkPassFrame.addEventListener("click", async function(event) {
-                            //window.alert(`Link AÇÃO Pass foi acionado!`)
-
                             console.clear();
-                            event.preventDefault();
+                            console.log(Date());
 
-                            let nameID = "PASSAGENS";
+                            //Capturando data-link
+                            let nameID = linkPassFrame.dataset.link;
+                            console.log("Iniciando Operações", nameID)
 
                             //Iniciando tela de carregamento
-                            const statusLoading = await showLoadingScreen();
+                            const statusLoading = await showLoadingScreen(nameID);
                             console.log(statusLoading, nameID);
 
+                            //Iniciando roteador de URL
+                            let keyValue = 1;
+                            let urlID = `/rg-transporte-executivo/${nameID}`;
+                            const statusURL = await roteadorURL(keyValue, urlID);
+                            console.log(statusURL);
+
+                            //Caminho para atualização DOM
+                            let SRCiframe = `assets/${nameID}.html`;
+                            console.log(SRCiframe, "Caminho para Atualizar DOM");
+
                             //Atualizando Documentação iFrame
-                            let SRCiframe = "../assets/passagens-aereas.html"
                             const statusIframe = await atualizaIframe(SRCiframe);
                             console.log(statusIframe, nameID);
 
@@ -934,7 +1004,7 @@
                             //Encerrando Screen Loading...
                             const statusOff = await offLoadingScreen();
                             console.log(statusOff, nameID);
-                            console.log(`Link ${nameID} frame pronto!`);
+                            console.log(`Link frame ${nameID} from home menu oculto pronto!`);
                         })
                     }
 
@@ -954,17 +1024,27 @@
             if (linkSobreOculto) {
                 linkSobreOculto.addEventListener("click", async function(event) {
                     console.clear();
-                    event.preventDefault();
+                    console.log(Date());
 
-                    let nameID = "SOBRE";
+                    //Capturando data-link
+                    let nameID = linkSobreOculto.dataset.link;
+                    console.log("Iniciando Operações", nameID)
 
                     //Alterando propriedades Menu Oculto
                     const statusMOculto = await changeCSSOculto(ocultArray);
                     console.log(statusMOculto, nameID);
-                    
-                    
+
+                    //Iniciando roteador de URL
+                    let keyValue = 1;
+                    let urlID = `/rg-transporte-executivo/${nameID}`;
+                    const statusURL = await roteadorURL(keyValue, urlID);
+                    console.log(statusURL);
+
+                    //Caminho para atualização DOM
+                    let SRCiframe = `assets/${nameID}.html`;
+                    console.log(SRCiframe, "Caminho para Atualizar DOM");
+
                     //Atualizando Documentação iFrame
-                    let SRCiframe = "../assets/sobre.html"
                     const statusIframe = await atualizaIframe(SRCiframe);
                     console.log(statusIframe, nameID);
 
@@ -1004,16 +1084,27 @@
             if (linkAgenOculto) {
                 linkAgenOculto.addEventListener("click", async function(event) {
                     console.clear();
-                    event.preventDefault();
+                    console.log(Date());
 
-                    let nameID = "AGENDAMENTO";
+                    //Capturando data-link
+                    let nameID = linkAgenOculto.dataset.link;
+                    console.log("Iniciando Operações", nameID)
 
                     //Alterando propriedades Menu Oculto
                     const statusMOculto = await changeCSSOculto(ocultArray);
                     console.log(statusMOculto, nameID);
 
+                    //Iniciando roteador de URL
+                    let keyValue = 1;
+                    let urlID = `/rg-transporte-executivo/${nameID}`;
+                    const statusURL = await roteadorURL(keyValue, urlID);
+                    console.log(statusURL);
+
+                    //Caminho para atualização DOM
+                    let SRCiframe = `assets/${nameID}.html`;
+                    console.log(SRCiframe, "Caminho para Atualizar DOM");
+
                     //Atualizando Documentação iFrame
-                    let SRCiframe = "../assets/agendamento.html"
                     const statusIframe = await atualizaIframe(SRCiframe);
                     console.log(statusIframe, nameID);
 
@@ -1053,16 +1144,27 @@
             if (linkTransOculto) {
                 linkTransOculto.addEventListener("click", async function(event) {
                     console.clear();
-                    event.preventDefault();
+                    console.log(Date());
 
-                    let nameID = "TRANSFER";
+                    //Capturando data-link
+                    let nameID = linkTransOculto.dataset.link;
+                    console.log("Iniciando Operações", nameID)
 
                     //Alterando propriedades Menu Oculto
                     const statusMOculto = await changeCSSOculto(ocultArray);
                     console.log(statusMOculto, nameID);
 
+                    //Iniciando roteador de URL
+                    let keyValue = 1;
+                    let urlID = `/rg-transporte-executivo/${nameID}`;
+                    const statusURL = await roteadorURL(keyValue, urlID);
+                    console.log(statusURL);
+
+                    //Caminho para atualização DOM
+                    let SRCiframe = `assets/${nameID}.html`;
+                    console.log(SRCiframe, "Caminho para Atualizar DOM");
+
                     //Atualizando Documentação iFrame
-                    let SRCiframe = "../assets/transfer-aeroporto.html"
                     const statusIframe = await atualizaIframe(SRCiframe);
                     console.log(statusIframe, nameID);
 
@@ -1102,16 +1204,27 @@
             if (linkViagOculto) {
                 linkViagOculto.addEventListener("click", async function(event) {
                     console.clear();
-                    event.preventDefault();
+                    console.log(Date());
 
-                    let nameID = "VIAGENS";
+                    //Capturando data-link
+                    let nameID = linkViagOculto.dataset.link;
+                    console.log("Iniciando Operações", nameID)
 
                     //Alterando propriedades Menu Oculto
                     const statusMOculto = await changeCSSOculto(ocultArray);
                     console.log(statusMOculto, nameID);
 
+                    //Iniciando roteador de URL
+                    let keyValue = 1;
+                    let urlID = `/rg-transporte-executivo/${nameID}`;
+                    const statusURL = await roteadorURL(keyValue, urlID);
+                    console.log(statusURL);
+
+                    //Caminho para atualização DOM
+                    let SRCiframe = `assets/${nameID}.html`;
+                    console.log(SRCiframe, "Caminho para Atualizar DOM");
+
                     //Atualizando Documentação iFrame
-                    let SRCiframe = "../assets/viagens-executivas.html"
                     const statusIframe = await atualizaIframe(SRCiframe);
                     console.log(statusIframe, nameID);
 
@@ -1151,16 +1264,27 @@
             if (linkPacoOculto) {
                 linkPacoOculto.addEventListener("click", async function(event) {
                     console.clear();
-                    event.preventDefault();
+                    console.log(Date());
 
-                    let nameID = "PACOTES";
+                    //Capturando data-link
+                    let nameID = linkPacoOculto.dataset.link;
+                    console.log("Iniciando Operações", nameID)
 
                     //Alterando propriedades Menu Oculto
                     const statusMOculto = await changeCSSOculto(ocultArray);
                     console.log(statusMOculto, nameID);
 
+                    //Iniciando roteador de URL
+                    let keyValue = 1;
+                    let urlID = `/rg-transporte-executivo/${nameID}`;
+                    const statusURL = await roteadorURL(keyValue, urlID);
+                    console.log(statusURL);
+
+                    //Caminho para atualização DOM
+                    let SRCiframe = `assets/${nameID}.html`;
+                    console.log(SRCiframe, "Caminho para Atualizar DOM");
+
                     //Atualizando Documentação iFrame
-                    let SRCiframe = "../assets/pacotes-turisticos.html"
                     const statusIframe = await atualizaIframe(SRCiframe);
                     console.log(statusIframe, nameID);
 
@@ -1220,16 +1344,27 @@
             if (linkPassOculto) {
                 linkPassOculto.addEventListener("click", async function(event) {
                     console.clear();
-                    event.preventDefault();
+                    console.log(Date());
 
-                    let nameID = "PASSAGENS";
+                    //Capturando data-link
+                    let nameID = linkPassOculto.dataset.link;
+                    console.log("Iniciando Operações", nameID)
 
                     //Alterando propriedades Menu Oculto
                     const statusMOculto = await changeCSSOculto(ocultArray);
                     console.log(statusMOculto, nameID);
 
+                    //Iniciando roteador de URL
+                    let keyValue = 1;
+                    let urlID = `/rg-transporte-executivo/${nameID}`;
+                    const statusURL = await roteadorURL(keyValue, urlID);
+                    console.log(statusURL);
+
+                    //Caminho para atualização DOM
+                    let SRCiframe = `assets/${nameID}.html`;
+                    console.log(SRCiframe, "Caminho para Atualizar DOM");
+
                     //Atualizando Documentação iFrame
-                    let SRCiframe = "../assets/passagens-aereas.html"
                     const statusIframe = await atualizaIframe(SRCiframe);
                     console.log(statusIframe, nameID);
 
@@ -1271,16 +1406,27 @@
             if (nav_home) {
                 nav_home.addEventListener("click", async function(event) {
                     console.clear();
-                    event.preventDefault();
+                    console.log(Date());
 
-                    let nameID = "HOME";
+                    //Capturando data-link
+                    let nameID = nav_home.dataset.link;
+                    console.log("Iniciando Operações", nameID)
 
                     //Iniciando tela de carregamento
-                    const statusLoading = await showLoadingScreen();
+                    const statusLoading = await showLoadingScreen(nameID);
                     console.log(statusLoading, nameID);
 
+                    //Iniciando roteador de URL
+                    let keyValue = 1;
+                    let urlID = `/rg-transporte-executivo/${nameID}`;
+                    const statusURL = await roteadorURL(keyValue, urlID);
+                    console.log(statusURL);
+
+                    //Caminho para atualização DOM
+                    let SRCiframe = `assets/${nameID}.html`;
+                    console.log(SRCiframe, "Caminho para Atualizar DOM");
+
                     //Atualizando Documentação iFrame
-                    let SRCiframe = "../assets/home.html"
                     const statusIframe = await atualizaIframe(SRCiframe);
                     console.log(statusIframe, nameID);
 
@@ -1541,11 +1687,11 @@
                     const statusLoading = await showLoadingScreen(nameID);
                     console.log(statusLoading, nameID);
 
-                    //Infos de origem, diretórios
-                    const origemDir = window.location.origin; //Domínio
-                    let pathAtual = window.location.pathname; //Pasta Atual
-                    console.log(origemDir, "Domínio");
-                    console.log(pathAtual, "Diretório Atual");
+                    //Iniciando roteador de URL
+                    let keyValue = 1;
+                    let urlID = `/rg-transporte-executivo/${nameID}`;
+                    const statusURL = await roteadorURL(keyValue, urlID);
+                    console.log(statusURL);
 
                     //Caminho para atualização DOM
                     let SRCiframe = `assets/${nameID}.html`;
@@ -1586,16 +1732,27 @@
             if (nav_agen) {
                 nav_agen.addEventListener("click", async function(event) {
                     console.clear();
-                    event.preventDefault();
+                    console.log(Date());
 
-                    let nameID = "AGENDAMENTO";
+                    //Capturando data-link
+                    let nameID = nav_agen.dataset.link;
+                    console.log("Iniciando Operações", nameID)
 
                     //Iniciando tela de carregamento
-                    const statusLoading = await showLoadingScreen();
+                    const statusLoading = await showLoadingScreen(nameID);
                     console.log(statusLoading, nameID);
 
+                    //Iniciando roteador de URL
+                    let keyValue = 1;
+                    let urlID = `/rg-transporte-executivo/${nameID}`;
+                    const statusURL = await roteadorURL(keyValue, urlID);
+                    console.log(statusURL);
+
+                    //Caminho para atualização DOM
+                    let SRCiframe = `assets/${nameID}.html`;
+                    console.log(SRCiframe, "Caminho para Atualizar DOM");
+
                     //Atualizando Documentação iFrame
-                    let SRCiframe = "../assets/agendamento.html"
                     const statusIframe = await atualizaIframe(SRCiframe);
                     console.log(statusIframe, nameID);
 
@@ -1620,7 +1777,7 @@
                     }
 
                     //Encerrando Screen Loading...
-                    const statusOff = await offLoadingScreen();
+                    const statusOff = await offLoadingScreen(nameID);
                     console.log(statusOff, nameID);
                     console.log(`Botão ${nameID} nav bar pronto!`);
                 })
@@ -1631,16 +1788,27 @@
                 ser_trans.addEventListener("click", async function(event) {
                     console.clear();
                     navBarDrop.style.display = "none";
-                    event.preventDefault();
+                    console.log(Date());
 
-                    let nameID = "TRANSFER";
+                    //Capturando data-link
+                    let nameID = ser_trans.dataset.link;
+                    console.log("Iniciando Operações", nameID)
 
                     //Iniciando tela de carregamento
-                    const statusLoading = await showLoadingScreen();
+                    const statusLoading = await showLoadingScreen(nameID);
                     console.log(statusLoading, nameID);
 
+                    //Iniciando roteador de URL
+                    let keyValue = 1;
+                    let urlID = `/rg-transporte-executivo/${nameID}`;
+                    const statusURL = await roteadorURL(keyValue, urlID);
+                    console.log(statusURL);
+
+                    //Caminho para atualização DOM
+                    let SRCiframe = `assets/${nameID}.html`;
+                    console.log(SRCiframe, "Caminho para Atualizar DOM");
+
                     //Atualizando Documentação iFrame
-                    let SRCiframe = "../assets/transfer-aeroporto.html"
                     const statusIframe = await atualizaIframe(SRCiframe);
                     console.log(statusIframe, nameID);
 
@@ -1677,16 +1845,27 @@
                 ser_viag.addEventListener("click", async function(event) {
                     console.clear();
                     navBarDrop.style.display = "none";
-                    event.preventDefault();
+                    console.log(Date());
 
-                    let nameID = "VIAGENS";
+                    //Capturando data-link
+                    let nameID = ser_viag.dataset.link;
+                    console.log("Iniciando Operações", nameID)
 
                     //Iniciando tela de carregamento
-                    const statusLoading = await showLoadingScreen();
+                    const statusLoading = await showLoadingScreen(nameID);
                     console.log(statusLoading, nameID);
 
+                    //Iniciando roteador de URL
+                    let keyValue = 1;
+                    let urlID = `/rg-transporte-executivo/${nameID}`;
+                    const statusURL = await roteadorURL(keyValue, urlID);
+                    console.log(statusURL);
+
+                    //Caminho para atualização DOM
+                    let SRCiframe = `assets/${nameID}.html`;
+                    console.log(SRCiframe, "Caminho para Atualizar DOM");
+
                     //Atualizando Documentação iFrame
-                    let SRCiframe = "../assets/viagens-executivas.html"
                     const statusIframe = await atualizaIframe(SRCiframe);
                     console.log(statusIframe, nameID);
 
@@ -1723,16 +1902,27 @@
                 ser_paco.addEventListener("click", async function(event) {
                     console.clear();
                     navBarDrop.style.display = "none";
-                    event.preventDefault();
+                    console.log(Date());
 
-                    let nameID = "PACOTES";
+                    //Capturando data-link
+                    let nameID = ser_paco.dataset.link;
+                    console.log("Iniciando Operações", nameID)
 
                     //Iniciando tela de carregamento
-                    const statusLoading = await showLoadingScreen();
+                    const statusLoading = await showLoadingScreen(nameID);
                     console.log(statusLoading, nameID);
 
+                    //Iniciando roteador de URL
+                    let keyValue = 1;
+                    let urlID = `/rg-transporte-executivo/${nameID}`;
+                    const statusURL = await roteadorURL(keyValue, urlID);
+                    console.log(statusURL);
+
+                    //Caminho para atualização DOM
+                    let SRCiframe = `assets/${nameID}.html`;
+                    console.log(SRCiframe, "Caminho para Atualizar DOM");
+
                     //Atualizando Documentação iFrame
-                    let SRCiframe = "../assets/pacotes-turisticos.html"
                     const statusIframe = await atualizaIframe(SRCiframe);
                     console.log(statusIframe, nameID);
 
@@ -1787,16 +1977,27 @@
                 ser_pass.addEventListener("click", async function(event) {
                     console.clear();
                     navBarDrop.style.display = "none";
-                    event.preventDefault();
+                    console.log(Date());
 
-                    let nameID = "PASSAGENS";
+                    //Capturando data-link
+                    let nameID = ser_pass.dataset.link;
+                    console.log("Iniciando Operações", nameID)
 
                     //Iniciando tela de carregamento
-                    const statusLoading = await showLoadingScreen();
+                    const statusLoading = await showLoadingScreen(nameID);
                     console.log(statusLoading, nameID);
 
+                    //Iniciando roteador de URL
+                    let keyValue = 1;
+                    let urlID = `/rg-transporte-executivo/${nameID}`;
+                    const statusURL = await roteadorURL(keyValue, urlID);
+                    console.log(statusURL);
+
+                    //Caminho para atualização DOM
+                    let SRCiframe = `assets/${nameID}.html`;
+                    console.log(SRCiframe, "Caminho para Atualizar DOM");
+
                     //Atualizando Documentação iFrame
-                    let SRCiframe = "../assets/passagens-aereas.html"
                     const statusIframe = await atualizaIframe(SRCiframe);
                     console.log(statusIframe, nameID);
 
@@ -1852,16 +2053,27 @@
             if (linkTransFrame) {
                 linkTransFrame.addEventListener("click", async function(event) {
                     console.clear();
-                    event.preventDefault();
+                    console.log(Date());
 
-                    let nameID = "TRANSFER";
+                    //Capturando data-link
+                    let nameID = linkTransFrame.dataset.link;
+                    console.log("Iniciando Operações", nameID)
 
                     //Iniciando tela de carregamento
-                    const statusLoading = await showLoadingScreen();
+                    const statusLoading = await showLoadingScreen(nameID);
                     console.log(statusLoading, nameID);
 
+                    //Iniciando roteador de URL
+                    let keyValue = 1;
+                    let urlID = `/rg-transporte-executivo/${nameID}`;
+                    const statusURL = await roteadorURL(keyValue, urlID);
+                    console.log(statusURL);
+
+                    //Caminho para atualização DOM
+                    let SRCiframe = `assets/${nameID}.html`;
+                    console.log(SRCiframe, "Caminho para Atualizar DOM");
+
                     //Atualizando Documentação iFrame
-                    let SRCiframe = "../assets/transfer-aeroporto.html"
                     const statusIframe = await atualizaIframe(SRCiframe);
                     console.log(statusIframe, nameID);
 
@@ -1888,7 +2100,7 @@
                     //Encerrando Screen Loading...
                     const statusOff = await offLoadingScreen();
                     console.log(statusOff, nameID);
-                    console.log(`Link ${nameID} frame pronto!`);
+                    console.log(`Link ${nameID} frame default pronto!`);
                 })
             }
 
@@ -1897,16 +2109,27 @@
             if (linkViagFrame) {
                 linkViagFrame.addEventListener("click", async function(event) {
                     console.clear();
-                    event.preventDefault();
+                    console.log(Date());
 
-                    let nameID = "VIAGENS";
+                    //Capturando data-link
+                    let nameID = linkViagFrame.dataset.link;
+                    console.log("Iniciando Operações", nameID)
 
                     //Iniciando tela de carregamento
-                    const statusLoading = await showLoadingScreen();
+                    const statusLoading = await showLoadingScreen(nameID);
                     console.log(statusLoading, nameID);
 
+                    //Iniciando roteador de URL
+                    let keyValue = 1;
+                    let urlID = `/rg-transporte-executivo/${nameID}`;
+                    const statusURL = await roteadorURL(keyValue, urlID);
+                    console.log(statusURL);
+
+                    //Caminho para atualização DOM
+                    let SRCiframe = `assets/${nameID}.html`;
+                    console.log(SRCiframe, "Caminho para Atualizar DOM");
+
                     //Atualizando Documentação iFrame
-                    let SRCiframe = "../assets/viagens-executivas.html"
                     const statusIframe = await atualizaIframe(SRCiframe);
                     console.log(statusIframe, nameID);
 
@@ -1933,7 +2156,7 @@
                     //Encerrando Screen Loading...
                     const statusOff = await offLoadingScreen();
                     console.log(statusOff, nameID);
-                    console.log(`Link ${nameID} frame pronto!`);
+                    console.log(`Link ${nameID} frame default pronto!`);
                 })
             }
 
@@ -1942,16 +2165,27 @@
             if (linkPacoFrame) {
                 linkPacoFrame.addEventListener("click", async function(event) {
                     console.clear();
-                    event.preventDefault();
+                    console.log(Date());
 
-                    let nameID = "PACOTES";
+                    //Capturando data-link
+                    let nameID = linkPacoFrame.dataset.link;
+                    console.log("Iniciando Operações", nameID)
 
                     //Iniciando tela de carregamento
-                    const statusLoading = await showLoadingScreen();
+                    const statusLoading = await showLoadingScreen(nameID);
                     console.log(statusLoading, nameID);
 
+                    //Iniciando roteador de URL
+                    let keyValue = 1;
+                    let urlID = `/rg-transporte-executivo/${nameID}`;
+                    const statusURL = await roteadorURL(keyValue, urlID);
+                    console.log(statusURL);
+
+                    //Caminho para atualização DOM
+                    let SRCiframe = `assets/${nameID}.html`;
+                    console.log(SRCiframe, "Caminho para Atualizar DOM");
+
                     //Atualizando Documentação iFrame
-                    let SRCiframe = "../assets/pacotes-turisticos.html"
                     const statusIframe = await atualizaIframe(SRCiframe);
                     console.log(statusIframe, nameID);
 
@@ -1996,7 +2230,7 @@
                     //Encerrando Screen Loading...
                     const statusOff = await offLoadingScreen();
                     console.log(statusOff, nameID);
-                    console.log(`Link ${nameID} frame pronto!`);
+                    console.log(`Link ${nameID} frame default pronto!`);
                 })
             }
 
@@ -2005,16 +2239,27 @@
             if (linkPassFrame) {
                 linkPassFrame.addEventListener("click", async function(event) {
                     console.clear();
-                    event.preventDefault();
+                    console.log(Date());
 
-                    let nameID = "PASSAGENS";
+                    //Capturando data-link
+                    let nameID = linkPassFrame.dataset.link;
+                    console.log("Iniciando Operações", nameID)
 
                     //Iniciando tela de carregamento
-                    const statusLoading = await showLoadingScreen();
+                    const statusLoading = await showLoadingScreen(nameID);
                     console.log(statusLoading, nameID);
 
+                    //Iniciando roteador de URL
+                    let keyValue = 1;
+                    let urlID = `/rg-transporte-executivo/${nameID}`;
+                    const statusURL = await roteadorURL(keyValue, urlID);
+                    console.log(statusURL);
+
+                    //Caminho para atualização DOM
+                    let SRCiframe = `assets/${nameID}.html`;
+                    console.log(SRCiframe, "Caminho para Atualizar DOM");
+
                     //Atualizando Documentação iFrame
-                    let SRCiframe = "../assets/passagens-aereas.html"
                     const statusIframe = await atualizaIframe(SRCiframe);
                     console.log(statusIframe, nameID);
 
@@ -2041,7 +2286,7 @@
                     //Encerrando Screen Loading...
                     const statusOff = await offLoadingScreen();
                     console.log(statusOff, nameID);
-                    console.log(`Link ${nameID} frame pronto!`);
+                    console.log(`Link ${nameID} frame default pronto!`);
                 })
             }
 
@@ -2060,16 +2305,27 @@
             if (fotHome) {
                 fotHome.addEventListener("click", async function(event) {
                     console.clear();
-                    event.preventDefault();
+                    console.log(Date());
 
-                    let nameID = "HOME";
+                    //Capturando data-link
+                    let nameID = fotHome.dataset.link;
+                    console.log("Iniciando Operações", nameID)
 
                     //Iniciando tela de carregamento
-                    const statusLoading = await showLoadingScreen();
+                    const statusLoading = await showLoadingScreen(nameID);
                     console.log(statusLoading, nameID);
 
+                    //Iniciando roteador de URL
+                    let keyValue = 1;
+                    let urlID = `/rg-transporte-executivo/${nameID}`;
+                    const statusURL = await roteadorURL(keyValue, urlID);
+                    console.log(statusURL);
+
+                    //Caminho para atualização DOM
+                    let SRCiframe = `assets/${nameID}.html`;
+                    console.log(SRCiframe, "Caminho para Atualizar DOM");
+
                     //Atualizando Documentação iFrame
-                    let SRCiframe = "../assets/home.html"
                     const statusIframe = await atualizaIframe(SRCiframe);
                     console.log(statusIframe, nameID);
 
@@ -2113,19 +2369,28 @@
 
                     if (linkTransFrame) {
                         linkTransFrame.addEventListener("click", async function(event) {
-                            //window.alert(`Link AÇÃO Transfer foi acionado!`)
-
                             console.clear();
-                            event.preventDefault();
+                            console.log(Date());
 
-                            let nameID = "TRANSFER";
+                            //Capturando data-link
+                            let nameID = linkTransFrame.dataset.link;
+                            console.log("Iniciando Operações", nameID)
 
                             //Iniciando tela de carregamento
-                            const statusLoading = await showLoadingScreen();
+                            const statusLoading = await showLoadingScreen(nameID);
                             console.log(statusLoading, nameID);
 
+                            //Iniciando roteador de URL
+                            let keyValue = 1;
+                            let urlID = `/rg-transporte-executivo/${nameID}`;
+                            const statusURL = await roteadorURL(keyValue, urlID);
+                            console.log(statusURL);
+
+                            //Caminho para atualização DOM
+                            let SRCiframe = `assets/${nameID}.html`;
+                            console.log(SRCiframe, "Caminho para Atualizar DOM");
+
                             //Atualizando Documentação iFrame
-                            let SRCiframe = "../assets/transfer-aeroporto.html"
                             const statusIframe = await atualizaIframe(SRCiframe);
                             console.log(statusIframe, nameID);
 
@@ -2152,25 +2417,34 @@
                             //Encerrando Screen Loading...
                             const statusOff = await offLoadingScreen();
                             console.log(statusOff, nameID);
-                            console.log(`Link ${nameID} frame pronto!`);
+                            console.log(`Link frame ${nameID} from home footer pronto!`);
                         })
                     }
 
                     if (linkViagFrame) {
                         linkViagFrame.addEventListener("click", async function(event) {
-                            //window.alert(`Link AÇÃO Viagem foi acionado!`)
-
                             console.clear();
-                            event.preventDefault();
+                            console.log(Date());
 
-                            let nameID = "VIAGENS";
+                            //Capturando data-link
+                            let nameID = linkViagFrame.dataset.link;
+                            console.log("Iniciando Operações", nameID)
 
                             //Iniciando tela de carregamento
-                            const statusLoading = await showLoadingScreen();
+                            const statusLoading = await showLoadingScreen(nameID);
                             console.log(statusLoading, nameID);
 
+                            //Iniciando roteador de URL
+                            let keyValue = 1;
+                            let urlID = `/rg-transporte-executivo/${nameID}`;
+                            const statusURL = await roteadorURL(keyValue, urlID);
+                            console.log(statusURL);
+
+                            //Caminho para atualização DOM
+                            let SRCiframe = `assets/${nameID}.html`;
+                            console.log(SRCiframe, "Caminho para Atualizar DOM");
+
                             //Atualizando Documentação iFrame
-                            let SRCiframe = "../assets/viagens-executivas.html"
                             const statusIframe = await atualizaIframe(SRCiframe);
                             console.log(statusIframe, nameID);
 
@@ -2197,25 +2471,34 @@
                             //Encerrando Screen Loading...
                             const statusOff = await offLoadingScreen();
                             console.log(statusOff, nameID);
-                            console.log(`Link ${nameID} frame pronto!`);
+                            console.log(`Link frame ${nameID} from home footer pronto!`);
                         })
                     }
 
                     if (linkPacoFrame) {
                         linkPacoFrame.addEventListener("click", async function(event) {
-                            //window.alert(`Link AÇÃO Paco foi acionado!`)
-
                             console.clear();
-                            event.preventDefault();
+                            console.log(Date());
 
-                            let nameID = "PACOTES";
+                            //Capturando data-link
+                            let nameID = linkPacoFrame.dataset.link;
+                            console.log("Iniciando Operações", nameID)
 
                             //Iniciando tela de carregamento
-                            const statusLoading = await showLoadingScreen();
+                            const statusLoading = await showLoadingScreen(nameID);
                             console.log(statusLoading, nameID);
 
+                            //Iniciando roteador de URL
+                            let keyValue = 1;
+                            let urlID = `/rg-transporte-executivo/${nameID}`;
+                            const statusURL = await roteadorURL(keyValue, urlID);
+                            console.log(statusURL);
+
+                            //Caminho para atualização DOM
+                            let SRCiframe = `assets/${nameID}.html`;
+                            console.log(SRCiframe, "Caminho para Atualizar DOM");
+
                             //Atualizando Documentação iFrame
-                            let SRCiframe = "../assets/pacotes-turisticos.html"
                             const statusIframe = await atualizaIframe(SRCiframe);
                             console.log(statusIframe, nameID);
 
@@ -2260,25 +2543,34 @@
                             //Encerrando Screen Loading...
                             const statusOff = await offLoadingScreen();
                             console.log(statusOff, nameID);
-                            console.log(`Link ${nameID} frame pronto!`);
+                            console.log(`Link frame ${nameID} from home footer pronto!`);
                         })
                     }
 
                     if (linkPassFrame) {
                         linkPassFrame.addEventListener("click", async function(event) {
-                            //window.alert(`Link AÇÃO Pass foi acionado!`)
-
                             console.clear();
-                            event.preventDefault();
+                            console.log(Date());
 
-                            let nameID = "PASSAGENS";
+                            //Capturando data-link
+                            let nameID = linkPassFrame.dataset.link;
+                            console.log("Iniciando Operações", nameID)
 
                             //Iniciando tela de carregamento
-                            const statusLoading = await showLoadingScreen();
+                            const statusLoading = await showLoadingScreen(nameID);
                             console.log(statusLoading, nameID);
 
+                            //Iniciando roteador de URL
+                            let keyValue = 1;
+                            let urlID = `/rg-transporte-executivo/${nameID}`;
+                            const statusURL = await roteadorURL(keyValue, urlID);
+                            console.log(statusURL);
+
+                            //Caminho para atualização DOM
+                            let SRCiframe = `assets/${nameID}.html`;
+                            console.log(SRCiframe, "Caminho para Atualizar DOM");
+
                             //Atualizando Documentação iFrame
-                            let SRCiframe = "../assets/passagens-aereas.html"
                             const statusIframe = await atualizaIframe(SRCiframe);
                             console.log(statusIframe, nameID);
 
@@ -2305,7 +2597,7 @@
                             //Encerrando Screen Loading...
                             const statusOff = await offLoadingScreen();
                             console.log(statusOff, nameID);
-                            console.log(`Link ${nameID} frame pronto!`);
+                            console.log(`Link frame ${nameID} from home footer pronto!`);
                         })
                     }
 
@@ -2320,16 +2612,27 @@
             if (fotSobre) {
                 fotSobre.addEventListener("click", async function(event) {
                     console.clear();
-                    event.preventDefault();
+                    console.log(Date());
 
-                    let nameID = "SOBRE";
+                    //Capturando data-link
+                    let nameID = fotSobre.dataset.link;
+                    console.log("Iniciando Operações", nameID)
 
                     //Iniciando tela de carregamento
-                    const statusLoading = await showLoadingScreen();
+                    const statusLoading = await showLoadingScreen(nameID);
                     console.log(statusLoading, nameID);
 
+                    //Iniciando roteador de URL
+                    let keyValue = 1;
+                    let urlID = `/rg-transporte-executivo/${nameID}`;
+                    const statusURL = await roteadorURL(keyValue, urlID);
+                    console.log(statusURL);
+
+                    //Caminho para atualização DOM
+                    let SRCiframe = `assets/${nameID}.html`;
+                    console.log(SRCiframe, "Caminho para Atualizar DOM");
+
                     //Atualizando Documentação iFrame
-                    let SRCiframe = "../assets/sobre.html"
                     const statusIframe = await atualizaIframe(SRCiframe);
                     console.log(statusIframe, nameID);
 
@@ -2357,43 +2660,6 @@
                     const statusOff = await offLoadingScreen();
                     console.log(statusOff, nameID);
                     console.log(`Botão ${nameID} footer pronto!`);
-
-                    // console.clear();
-
-                    // //Iniciando tela de carregamento
-                    // showLoadingScreen().then((statusResult)=> {
-                    //     console.log(statusResult, "SOBRE");
-                    //     let SRCiframe = "../assets/sobre.html";
-
-                    //     //Atualizando Documentação iframe
-                    //     atualizaIframe(SRCiframe).then(()=> {
-                    //         console.log("Continuando processo SOBRE footer!")
-
-                    //         //Atualizando estilos CSS
-                    //         abaSobre(constArray).then((statusResult) => {
-                    //             console.log(statusResult);
-
-                    //             //Atualizando altura iframe
-                    //             alteraAlturaIframe().then((x) => {
-
-                    //                 //Evento click botão AÇÃO SOBRE
-                    //                 let btnSobreAction = x.querySelector(".am-btn");
-                    //                 if (btnSobreAction) {
-                    //                     btnSobreAction.addEventListener("click", function() {
-                    //                         //window.alert("Botão AÇÃO SOBRE foi acionado!")
-                    //                         window.open("https://wa.me/5541991495750", "_blank");
-                    //                     })
-                    //                 }
-
-                    //                 //Encerrando Screen Loading...
-                    //                 offLoadingScreen().then((statusResult) => {
-                    //                     console.log(statusResult, "SOBRE");
-                    //                     console.log("Configs SOBRE footer pronto!")
-                    //                 }) 
-                    //             })
-                    //         })
-                    //     })
-                    // })
                 })
             }
 
@@ -2401,16 +2667,27 @@
             if (fotAgen) {
                 fotAgen.addEventListener("click", async function(event) {
                     console.clear();
-                    event.preventDefault();
+                    console.log(Date());
 
-                    let nameID = "AGENDAMENTO";
+                    //Capturando data-link
+                    let nameID = fotAgen.dataset.link;
+                    console.log("Iniciando Operações", nameID)
 
                     //Iniciando tela de carregamento
-                    const statusLoading = await showLoadingScreen();
+                    const statusLoading = await showLoadingScreen(nameID);
                     console.log(statusLoading, nameID);
 
+                    //Iniciando roteador de URL
+                    let keyValue = 1;
+                    let urlID = `/rg-transporte-executivo/${nameID}`;
+                    const statusURL = await roteadorURL(keyValue, urlID);
+                    console.log(statusURL);
+
+                    //Caminho para atualização DOM
+                    let SRCiframe = `assets/${nameID}.html`;
+                    console.log(SRCiframe, "Caminho para Atualizar DOM");
+
                     //Atualizando Documentação iFrame
-                    let SRCiframe = "../assets/agendamento.html"
                     const statusIframe = await atualizaIframe(SRCiframe);
                     console.log(statusIframe, nameID);
 
@@ -2445,16 +2722,27 @@
             if (fotTrans) {
                 fotTrans.addEventListener("click", async function(event) {
                     console.clear();
-                    event.preventDefault();
+                    console.log(Date());
 
-                    let nameID = "TRANSFER";
+                    //Capturando data-link
+                    let nameID = fotTrans.dataset.link;
+                    console.log("Iniciando Operações", nameID)
 
                     //Iniciando tela de carregamento
-                    const statusLoading = await showLoadingScreen();
+                    const statusLoading = await showLoadingScreen(nameID);
                     console.log(statusLoading, nameID);
 
+                    //Iniciando roteador de URL
+                    let keyValue = 1;
+                    let urlID = `/rg-transporte-executivo/${nameID}`;
+                    const statusURL = await roteadorURL(keyValue, urlID);
+                    console.log(statusURL);
+
+                    //Caminho para atualização DOM
+                    let SRCiframe = `assets/${nameID}.html`;
+                    console.log(SRCiframe, "Caminho para Atualizar DOM");
+
                     //Atualizando Documentação iFrame
-                    let SRCiframe = "../assets/transfer-aeroporto.html"
                     const statusIframe = await atualizaIframe(SRCiframe);
                     console.log(statusIframe, nameID);
 
@@ -2489,16 +2777,27 @@
             if (fotViagem) {
                 fotViagem.addEventListener("click", async function(event) {
                     console.clear();
-                    event.preventDefault();
+                    console.log(Date());
 
-                    let nameID = "VIAGENS";
+                    //Capturando data-link
+                    let nameID = fotViagem.dataset.link;
+                    console.log("Iniciando Operações", nameID)
 
                     //Iniciando tela de carregamento
-                    const statusLoading = await showLoadingScreen();
+                    const statusLoading = await showLoadingScreen(nameID);
                     console.log(statusLoading, nameID);
 
+                    //Iniciando roteador de URL
+                    let keyValue = 1;
+                    let urlID = `/rg-transporte-executivo/${nameID}`;
+                    const statusURL = await roteadorURL(keyValue, urlID);
+                    console.log(statusURL);
+
+                    //Caminho para atualização DOM
+                    let SRCiframe = `assets/${nameID}.html`;
+                    console.log(SRCiframe, "Caminho para Atualizar DOM");
+
                     //Atualizando Documentação iFrame
-                    let SRCiframe = "../assets/viagens-executivas.html"
                     const statusIframe = await atualizaIframe(SRCiframe);
                     console.log(statusIframe, nameID);
 
@@ -2533,16 +2832,27 @@
             if (fotPaco) {
                 fotPaco.addEventListener("click", async function(event) {
                     console.clear();
-                    event.preventDefault();
+                    console.log(Date());
 
-                    let nameID = "PACOTES";
+                    //Capturando data-link
+                    let nameID = fotPaco.dataset.link;
+                    console.log("Iniciando Operações", nameID)
 
                     //Iniciando tela de carregamento
-                    const statusLoading = await showLoadingScreen();
+                    const statusLoading = await showLoadingScreen(nameID);
                     console.log(statusLoading, nameID);
 
+                    //Iniciando roteador de URL
+                    let keyValue = 1;
+                    let urlID = `/rg-transporte-executivo/${nameID}`;
+                    const statusURL = await roteadorURL(keyValue, urlID);
+                    console.log(statusURL);
+
+                    //Caminho para atualização DOM
+                    let SRCiframe = `assets/${nameID}.html`;
+                    console.log(SRCiframe, "Caminho para Atualizar DOM");
+
                     //Atualizando Documentação iFrame
-                    let SRCiframe = "../assets/pacotes-turisticos.html"
                     const statusIframe = await atualizaIframe(SRCiframe);
                     console.log(statusIframe, nameID);
 
@@ -2595,16 +2905,27 @@
             if (fotPass) {
                 fotPass.addEventListener("click", async function(event) {
                     console.clear();
-                    event.preventDefault();
+                    console.log(Date());
 
-                    let nameID = "PASSAGENS";
+                    //Capturando data-link
+                    let nameID = fotPass.dataset.link;
+                    console.log("Iniciando Operações", nameID)
 
                     //Iniciando tela de carregamento
-                    const statusLoading = await showLoadingScreen();
+                    const statusLoading = await showLoadingScreen(nameID);
                     console.log(statusLoading, nameID);
 
+                    //Iniciando roteador de URL
+                    let keyValue = 1;
+                    let urlID = `/rg-transporte-executivo/${nameID}`;
+                    const statusURL = await roteadorURL(keyValue, urlID);
+                    console.log(statusURL);
+
+                    //Caminho para atualização DOM
+                    let SRCiframe = `assets/${nameID}.html`;
+                    console.log(SRCiframe, "Caminho para Atualizar DOM");
+
                     //Atualizando Documentação iFrame
-                    let SRCiframe = "../assets/passagens-aereas.html"
                     const statusIframe = await atualizaIframe(SRCiframe);
                     console.log(statusIframe, nameID);
 
@@ -2639,16 +2960,27 @@
             if (fotPol) {
                 fotPol.addEventListener("click", async function(event) {
                     console.clear();
-                    event.preventDefault();
+                    console.log(Date());
 
-                    let nameID = "POLÍTICA";
+                    //Capturando data-link
+                    let nameID = fotPol.dataset.link;
+                    console.log("Iniciando Operações", nameID)
 
                     //Iniciando tela de carregamento
-                    const statusLoading = await showLoadingScreen();
+                    const statusLoading = await showLoadingScreen(nameID);
                     console.log(statusLoading, nameID);
 
+                    //Iniciando roteador de URL
+                    let keyValue = 1;
+                    let urlID = `/rg-transporte-executivo/${nameID}`;
+                    const statusURL = await roteadorURL(keyValue, urlID);
+                    console.log(statusURL);
+
+                    //Caminho para atualização DOM
+                    let SRCiframe = `assets/${nameID}.html`;
+                    console.log(SRCiframe, "Caminho para Atualizar DOM");
+
                     //Atualizando Documentação iFrame
-                    let SRCiframe = "../assets/politica.html"
                     const statusIframe = await atualizaIframe(SRCiframe);
                     console.log(statusIframe, nameID);
 
@@ -2667,6 +2999,10 @@
                 })
             }
 
+            // window.addEventListener('popstate', function(event) {
+            //     console.log("Voltando estado anterior url")
+            // })
+
             console.log("RT Transporte Executivo - v.1.0.0");
             console.log(Date()); 
 
@@ -2677,4 +3013,6 @@
         alteraAlturaIframe();
         console.log("Altura iframe redefinida sem carregamento!"); 
     });
+
+    //window.history.back()
 })()

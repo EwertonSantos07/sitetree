@@ -11,15 +11,15 @@
         <link 
             rel="shortcut icon" 
             type="image/png" 
-            href="../img/favicon.png?">
+            href="img/favicon.png?">
 
         <link rel="stylesheet"
             type="text/css"
             href="assets/index.css">
 
-        <link rel="stylesheet" 
-        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-
+        <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+        <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     </head>
 
     <body>
@@ -64,63 +64,70 @@
                 <a  
                     id="menu-oculto-home"
                     class="menu-oculto-text"
-                    href="assets/home.html"
                     target="bloco_central"
-                    style="color: #d2aa70">
+                    style="color: #d2aa70"
+                    data-link="home"
+                    role="button">
                     HOME
                 </a>
 
                 <a 
                     id="menu-oculto-trans"
                     class="menu-oculto-text" 
-                    href="assets/transfer-aeroporto.html"
                     target="bloco_central"
-                    style="color: white">
+                    style="color: white"
+                    data-link="transfer-aeroporto"
+                    role="button">
                     Transfer Aeroporto
                 </a>
 
                 <a 
                     id="menu-oculto-viagens"
                     class="menu-oculto-text"
-                    href="assets/viagens-executivas.html"
                     target="bloco_central"
-                    style="color: white">
+                    style="color: white"
+                    data-link="viagens-executivas"
+                    role="button">
                     Viagens Executivas
                 </a>
 
                 <a 
                     id="menu-oculto-pacotes"
                     class="menu-oculto-text"
-                    href="assets/pacotes-turisticos.html"
                     target="bloco_central"
-                    style="color: white">
+                    style="color: white"
+                    data-link="pacotes-turisticos"
+                    role="button">
                     Pacotes Turísticos no Brasil
                 </a>
 
                 <a 
                     id="menu-oculto-passagens"
                     class="menu-oculto-text"
-                    href="assets/passagens-aereas.html"
                     target="bloco_central"
-                    style="color: white">
+                    style="color: white"
+                    data-link="passagens-aereas"
+                    role="button">
                     Passagens Aéreas
                 </a>
 
                 <a 
                     id="menu-oculto-sobre"
                     class="menu-oculto-text"
-                    href="assets/sobre.html"
                     target="bloco_central"
-                    style="color: white">
+                    style="color: white"
+                    data-link="sobre"
+                    role="button">
                     SOBRE MIM
                 </a>
 
                 <a 
                     id="menu-oculto-agen"
                     class="menu-oculto-text"
-                    href="assets/agendamento.html"
                     target="bloco_central"
-                    style="color: white">
+                    style="color: white"
+                    data-link="agendamento"
+                    role="button">
                     AGENDAMENTO
                 </a>
 
@@ -139,8 +146,9 @@
                 <a  
                     id="navbar-home"
                     class="navbar-text"
-                    href="assets/home.html"
                     target="bloco_central"
+                    data-link="home"
+                    role="button"
                     style="color: #d2aa70">
                     HOME
                 </a>
@@ -170,32 +178,40 @@
                         <a 
                             id="dropdown-transfer"
                             class="dropdown-content-text" 
-                            href="assets/transfer-aeroporto.html"
-                            target="bloco_central">
+                            target="bloco_central"
+                            data-link="transfer-aeroporto"
+                            role="button"
+                            style="cursor: pointer">
                             Transfer Aeroporto
                         </a>
 
                         <a 
                             id="dropdown-viagem"
                             class="dropdown-content-text"
-                            href="assets/viagens-executivas.html"
-                            target="bloco_central">
+                            target="bloco_central"
+                            data-link="viagens-executivas"
+                            role="button"
+                            style="cursor: pointer">
                             Viagens Executivas
                         </a>
 
                         <a 
                             id="dropdown-pacotes"
                             class="dropdown-content-text"
-                            href="assets/pacotes-turisticos.html"
-                            target="bloco_central">
+                            target="bloco_central"
+                            data-link="pacotes-turisticos"
+                            role="button"
+                            style="cursor: pointer">
                             Pacotes Turísticos no Brasil
                         </a>
 
                         <a 
                             id="dropdown-passagens"
                             class="dropdown-content-text"
-                            href="assets/passagens-aereas.html"
-                            target="bloco_central">
+                            target="bloco_central"
+                            data-link="passagens-aereas"
+                            role="button"
+                            style="cursor: pointer">
                             Passagens Aéreas
                         </a>
                     
@@ -206,9 +222,10 @@
                 <a 
                     id="navbar-agen"
                     class="navbar-text"
-                    href="assets/agendamento.html"
                     target="bloco_central"
-                    style="color: white">
+                    style="color: white"
+                    data-link="agendamento"
+                    role="button">
                     AGENDAMENTO
                 </a>
             
@@ -257,34 +274,37 @@
                     <h1 class="ft-container-01-h1">Menu</h1>
 
                     <a 
-                        href="assets/home.html"
                         class="ft-container-01-link"
                         target="bloco_central">
                         <p 
                             id="ft-home"
-                            class="ft-container-01-text">
+                            class="ft-container-01-text"
+                            data-link="home"
+                            role="button">
                             HOME
                         </p>
                     </a>
 
                     <a 
-                        href="assets/sobre.html"
                         class="ft-container-01-link"
                         target="bloco_central">
                         <p 
                             id="ft-sobre"
-                            class="ft-container-01-text">
+                            class="ft-container-01-text"
+                            data-link="sobre"
+                            role="button">
                             SOBRE MIM
                         </p>
                     </a>
 
                     <a  
-                        href="assets/agendamento.html"
                         class="ft-container-01-link"
                         target="bloco_central">
                         <p 
                             id="ft-agen"
-                            class="ft-container-01-text">
+                            class="ft-container-01-text"
+                            data-link="agendamento"
+                            role="button">
                             AGENDAMENTO
                         </p>
                     </a>
@@ -295,45 +315,49 @@
                     <h1 class="ft-container-01-h1">Serviços</h1>
 
                     <a 
-                        href="assets/transfer-aeroporto.html"
                         class="ft-container-01-link"
                         target="bloco_central">
                         <p 
                             id="ft-trans"
-                            class="ft-container-01-text">
+                            class="ft-container-01-text"
+                            data-link="transfer-aeroporto"
+                            role="button">
                             TRANSFER AEROPORTO
                         </p>
                     </a>
 
                     <a  
-                        href="assets/viagens-executivas.html"
                         class="ft-container-01-link"
                         target="bloco_central">
                         <p 
                             id="ft-viag"
-                            class="ft-container-01-text">
+                            class="ft-container-01-text"
+                            data-link="viagens-executivas"
+                            role="button">
                             VIAGENS EXECUTIVAS
                         </p>
                     </a>
 
                     <a 
-                        href="assets/pacotes-turisticos.html"
                         class="ft-container-01-link"
                         target="bloco_central">
                         <p 
                             id="ft-pacotes"
-                            class="ft-container-01-text">
+                            class="ft-container-01-text"
+                            data-link="pacotes-turisticos"
+                            role="button">
                             PACOTES TURÍSTICOS NO BRASIL
                         </p>
                     </a>
 
                     <a 
-                        href="assets/passagens-aereas.html"
                         class="ft-container-01-link"
                         target="bloco_central">
                         <p 
                             id="ft-passagens"
-                            class="ft-container-01-text">
+                            class="ft-container-01-text"
+                            data-link="passagens-aereas"
+                            role="button">
                             PASSAGENS AÉREAS
                         </p>
                     </a>
@@ -344,12 +368,13 @@
                     <h1 class="ft-container-01-h1">Políticas</h1>
 
                     <a 
-                        href="assets/politica.html"
                         class="ft-container-01-link"
                         target="bloco_central">
                         <p 
                             id="ft-política"
-                            class="ft-container-01-text">
+                            class="ft-container-01-text"
+                            data-link="politica"
+                            role="button">
                             POLÍTICA DE PRIVACIDADE<br>
                             & COOKIES
                         </p>
