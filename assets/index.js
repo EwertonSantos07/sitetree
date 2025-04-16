@@ -18,14 +18,14 @@
             if(keyValue == 0) {
 
                 //Atualizando url navegador ao iniciar site ou atualizar página
-                if(pathURL == "/rg-transporte-executivo/") {
+                if(pathURL == "/sitetree/") {
                     const homeUrl = `${window.location.pathname}home`;
                     const newState = {page: 'home'};
                     const newTitle = 'home';
                     window.history.pushState(newState, newTitle, homeUrl);
                     console.log("Site foi atualizado com url padrão!!!")
                 } else {
-                    const homeUrl = "/rg-transporte-executivo/home";
+                    const homeUrl = "/sitetree/home";
                     const newState = {page: 'home'};
                     const newTitle = 'home';
                     window.history.pushState(newState, newTitle, homeUrl);
@@ -724,7 +724,7 @@
 
                     //Iniciando roteador de URL
                     let keyValue = 1;
-                    let urlID = `/rg-transporte-executivo/${nameID}`;
+                    let urlID = `/sitetree/${nameID}`;
                     const statusURL = await roteadorURL(keyValue, urlID);
                     console.log(statusURL);
 
@@ -789,7 +789,7 @@
 
                             //Iniciando roteador de URL
                             let keyValue = 1;
-                            let urlID = `/rg-transporte-executivo/${nameID}`;
+                            let urlID = `/sitetree/${nameID}`;
                             const statusURL = await roteadorURL(keyValue, urlID);
                             console.log(statusURL);
 
@@ -843,7 +843,7 @@
 
                             //Iniciando roteador de URL
                             let keyValue = 1;
-                            let urlID = `/rg-transporte-executivo/${nameID}`;
+                            let urlID = `/sitetree/${nameID}`;
                             const statusURL = await roteadorURL(keyValue, urlID);
                             console.log(statusURL);
 
@@ -897,7 +897,7 @@
 
                             //Iniciando roteador de URL
                             let keyValue = 1;
-                            let urlID = `/rg-transporte-executivo/${nameID}`;
+                            let urlID = `/sitetree/${nameID}`;
                             const statusURL = await roteadorURL(keyValue, urlID);
                             console.log(statusURL);
 
@@ -969,7 +969,7 @@
 
                             //Iniciando roteador de URL
                             let keyValue = 1;
-                            let urlID = `/rg-transporte-executivo/${nameID}`;
+                            let urlID = `/sitetree/${nameID}`;
                             const statusURL = await roteadorURL(keyValue, urlID);
                             console.log(statusURL);
 
@@ -1036,7 +1036,7 @@
 
                     //Iniciando roteador de URL
                     let keyValue = 1;
-                    let urlID = `/rg-transporte-executivo/${nameID}`;
+                    let urlID = `/sitetree/${nameID}`;
                     const statusURL = await roteadorURL(keyValue, urlID);
                     console.log(statusURL);
 
@@ -1096,7 +1096,7 @@
 
                     //Iniciando roteador de URL
                     let keyValue = 1;
-                    let urlID = `/rg-transporte-executivo/${nameID}`;
+                    let urlID = `/sitetree/${nameID}`;
                     const statusURL = await roteadorURL(keyValue, urlID);
                     console.log(statusURL);
 
@@ -1156,7 +1156,7 @@
 
                     //Iniciando roteador de URL
                     let keyValue = 1;
-                    let urlID = `/rg-transporte-executivo/${nameID}`;
+                    let urlID = `/sitetree/${nameID}`;
                     const statusURL = await roteadorURL(keyValue, urlID);
                     console.log(statusURL);
 
@@ -1216,7 +1216,7 @@
 
                     //Iniciando roteador de URL
                     let keyValue = 1;
-                    let urlID = `/rg-transporte-executivo/${nameID}`;
+                    let urlID = `/sitetree/${nameID}`;
                     const statusURL = await roteadorURL(keyValue, urlID);
                     console.log(statusURL);
 
@@ -1276,7 +1276,7 @@
 
                     //Iniciando roteador de URL
                     let keyValue = 1;
-                    let urlID = `/rg-transporte-executivo/${nameID}`;
+                    let urlID = `/sitetree/${nameID}`;
                     const statusURL = await roteadorURL(keyValue, urlID);
                     console.log(statusURL);
 
@@ -1356,7 +1356,7 @@
 
                     //Iniciando roteador de URL
                     let keyValue = 1;
-                    let urlID = `/rg-transporte-executivo/${nameID}`;
+                    let urlID = `/sitetree/${nameID}`;
                     const statusURL = await roteadorURL(keyValue, urlID);
                     console.log(statusURL);
 
@@ -1418,7 +1418,7 @@
 
                     //Iniciando roteador de URL
                     let keyValue = 1;
-                    let urlID = `/rg-transporte-executivo/${nameID}`;
+                    let urlID = `/sitetree/${nameID}`;
                     const statusURL = await roteadorURL(keyValue, urlID);
                     console.log(statusURL);
 
@@ -1470,19 +1470,28 @@
 
                     if (linkTransFrame) {
                         linkTransFrame.addEventListener("click", async function(event) {
-                            //window.alert(`Link AÇÃO Transfer foi acionado!`)
-
                             console.clear();
-                            event.preventDefault();
+                            console.log(Date());
 
-                            let nameID = "TRANSFER";
+                            //Capturando data-link
+                            let nameID = linkTransFrame.dataset.link;
+                            console.log("Iniciando Operações", nameID)
 
                             //Iniciando tela de carregamento
-                            const statusLoading = await showLoadingScreen();
+                            const statusLoading = await showLoadingScreen(nameID);
                             console.log(statusLoading, nameID);
 
+                            //Iniciando roteador de URL
+                            let keyValue = 1;
+                            let urlID = `/sitetree/${nameID}`;
+                            const statusURL = await roteadorURL(keyValue, urlID);
+                            console.log(statusURL);
+
+                            //Caminho para atualização DOM
+                            let SRCiframe = `assets/${nameID}.html`;
+                            console.log(SRCiframe, "Caminho para Atualizar DOM");
+
                             //Atualizando Documentação iFrame
-                            let SRCiframe = "../assets/transfer-aeroporto.html"
                             const statusIframe = await atualizaIframe(SRCiframe);
                             console.log(statusIframe, nameID);
 
@@ -1509,25 +1518,34 @@
                             //Encerrando Screen Loading...
                             const statusOff = await offLoadingScreen();
                             console.log(statusOff, nameID);
-                            console.log(`Link ${nameID} frame pronto!`);
+                            console.log(`Link frame ${nameID} from home nav bar pronto!`);
                         })
                     }
 
                     if (linkViagFrame) {
                         linkViagFrame.addEventListener("click", async function(event) {
-                            //window.alert(`Link AÇÃO Viagem foi acionado!`)
-
                             console.clear();
-                            event.preventDefault();
+                            console.log(Date());
 
-                            let nameID = "VIAGENS";
+                            //Capturando data-link
+                            let nameID = linkViagFrame.dataset.link;
+                            console.log("Iniciando Operações", nameID)
 
                             //Iniciando tela de carregamento
-                            const statusLoading = await showLoadingScreen();
+                            const statusLoading = await showLoadingScreen(nameID);
                             console.log(statusLoading, nameID);
 
+                            //Iniciando roteador de URL
+                            let keyValue = 1;
+                            let urlID = `/sitetree/${nameID}`;
+                            const statusURL = await roteadorURL(keyValue, urlID);
+                            console.log(statusURL);
+
+                            //Caminho para atualização DOM
+                            let SRCiframe = `assets/${nameID}.html`;
+                            console.log(SRCiframe, "Caminho para Atualizar DOM");
+
                             //Atualizando Documentação iFrame
-                            let SRCiframe = "../assets/viagens-executivas.html"
                             const statusIframe = await atualizaIframe(SRCiframe);
                             console.log(statusIframe, nameID);
 
@@ -1554,25 +1572,34 @@
                             //Encerrando Screen Loading...
                             const statusOff = await offLoadingScreen();
                             console.log(statusOff, nameID);
-                            console.log(`Link ${nameID} frame pronto!`);
+                            console.log(`Link frame ${nameID} from home nav bar pronto!`);
                         })
                     }
 
                     if (linkPacoFrame) {
                         linkPacoFrame.addEventListener("click", async function(event) {
-                            //window.alert(`Link AÇÃO Paco foi acionado!`)
-
                             console.clear();
-                            event.preventDefault();
+                            console.log(Date());
 
-                            let nameID = "PACOTES";
+                            //Capturando data-link
+                            let nameID = linkPacoFrame.dataset.link;
+                            console.log("Iniciando Operações", nameID)
 
                             //Iniciando tela de carregamento
-                            const statusLoading = await showLoadingScreen();
+                            const statusLoading = await showLoadingScreen(nameID);
                             console.log(statusLoading, nameID);
 
+                            //Iniciando roteador de URL
+                            let keyValue = 1;
+                            let urlID = `/sitetree/${nameID}`;
+                            const statusURL = await roteadorURL(keyValue, urlID);
+                            console.log(statusURL);
+
+                            //Caminho para atualização DOM
+                            let SRCiframe = `assets/${nameID}.html`;
+                            console.log(SRCiframe, "Caminho para Atualizar DOM");
+
                             //Atualizando Documentação iFrame
-                            let SRCiframe = "../assets/pacotes-turisticos.html"
                             const statusIframe = await atualizaIframe(SRCiframe);
                             console.log(statusIframe, nameID);
 
@@ -1617,25 +1644,34 @@
                             //Encerrando Screen Loading...
                             const statusOff = await offLoadingScreen();
                             console.log(statusOff, nameID);
-                            console.log(`Link ${nameID} frame pronto!`);
+                            console.log(`Link frame ${nameID} from home nav bar pronto!`);
                         })
                     }
 
                     if (linkPassFrame) {
                         linkPassFrame.addEventListener("click", async function(event) {
-                            //window.alert(`Link AÇÃO Pass foi acionado!`)
-
                             console.clear();
-                            event.preventDefault();
+                            console.log(Date());
 
-                            let nameID = "PASSAGENS";
+                            //Capturando data-link
+                            let nameID = linkPassFrame.dataset.link;
+                            console.log("Iniciando Operações", nameID)
 
                             //Iniciando tela de carregamento
-                            const statusLoading = await showLoadingScreen();
+                            const statusLoading = await showLoadingScreen(nameID);
                             console.log(statusLoading, nameID);
 
+                            //Iniciando roteador de URL
+                            let keyValue = 1;
+                            let urlID = `/sitetree/${nameID}`;
+                            const statusURL = await roteadorURL(keyValue, urlID);
+                            console.log(statusURL);
+
+                            //Caminho para atualização DOM
+                            let SRCiframe = `assets/${nameID}.html`;
+                            console.log(SRCiframe, "Caminho para Atualizar DOM");
+
                             //Atualizando Documentação iFrame
-                            let SRCiframe = "../assets/passagens-aereas.html"
                             const statusIframe = await atualizaIframe(SRCiframe);
                             console.log(statusIframe, nameID);
 
@@ -1662,7 +1698,7 @@
                             //Encerrando Screen Loading...
                             const statusOff = await offLoadingScreen();
                             console.log(statusOff, nameID);
-                            console.log(`Link ${nameID} frame pronto!`);
+                            console.log(`Link frame ${nameID} from home nav bar pronto!`);
                         })
                     }
 
@@ -1689,7 +1725,7 @@
 
                     //Iniciando roteador de URL
                     let keyValue = 1;
-                    let urlID = `/rg-transporte-executivo/${nameID}`;
+                    let urlID = `/sitetree/${nameID}`;
                     const statusURL = await roteadorURL(keyValue, urlID);
                     console.log(statusURL);
 
@@ -1744,7 +1780,7 @@
 
                     //Iniciando roteador de URL
                     let keyValue = 1;
-                    let urlID = `/rg-transporte-executivo/${nameID}`;
+                    let urlID = `/sitetree/${nameID}`;
                     const statusURL = await roteadorURL(keyValue, urlID);
                     console.log(statusURL);
 
@@ -1800,7 +1836,7 @@
 
                     //Iniciando roteador de URL
                     let keyValue = 1;
-                    let urlID = `/rg-transporte-executivo/${nameID}`;
+                    let urlID = `/sitetree/${nameID}`;
                     const statusURL = await roteadorURL(keyValue, urlID);
                     console.log(statusURL);
 
@@ -1857,7 +1893,7 @@
 
                     //Iniciando roteador de URL
                     let keyValue = 1;
-                    let urlID = `/rg-transporte-executivo/${nameID}`;
+                    let urlID = `/sitetree/${nameID}`;
                     const statusURL = await roteadorURL(keyValue, urlID);
                     console.log(statusURL);
 
@@ -1914,7 +1950,7 @@
 
                     //Iniciando roteador de URL
                     let keyValue = 1;
-                    let urlID = `/rg-transporte-executivo/${nameID}`;
+                    let urlID = `/sitetree/${nameID}`;
                     const statusURL = await roteadorURL(keyValue, urlID);
                     console.log(statusURL);
 
@@ -1989,7 +2025,7 @@
 
                     //Iniciando roteador de URL
                     let keyValue = 1;
-                    let urlID = `/rg-transporte-executivo/${nameID}`;
+                    let urlID = `/sitetree/${nameID}`;
                     const statusURL = await roteadorURL(keyValue, urlID);
                     console.log(statusURL);
 
@@ -2065,7 +2101,7 @@
 
                     //Iniciando roteador de URL
                     let keyValue = 1;
-                    let urlID = `/rg-transporte-executivo/${nameID}`;
+                    let urlID = `/sitetree/${nameID}`;
                     const statusURL = await roteadorURL(keyValue, urlID);
                     console.log(statusURL);
 
@@ -2121,7 +2157,7 @@
 
                     //Iniciando roteador de URL
                     let keyValue = 1;
-                    let urlID = `/rg-transporte-executivo/${nameID}`;
+                    let urlID = `/sitetree/${nameID}`;
                     const statusURL = await roteadorURL(keyValue, urlID);
                     console.log(statusURL);
 
@@ -2177,7 +2213,7 @@
 
                     //Iniciando roteador de URL
                     let keyValue = 1;
-                    let urlID = `/rg-transporte-executivo/${nameID}`;
+                    let urlID = `/sitetree/${nameID}`;
                     const statusURL = await roteadorURL(keyValue, urlID);
                     console.log(statusURL);
 
@@ -2251,7 +2287,7 @@
 
                     //Iniciando roteador de URL
                     let keyValue = 1;
-                    let urlID = `/rg-transporte-executivo/${nameID}`;
+                    let urlID = `/sitetree/${nameID}`;
                     const statusURL = await roteadorURL(keyValue, urlID);
                     console.log(statusURL);
 
@@ -2317,7 +2353,7 @@
 
                     //Iniciando roteador de URL
                     let keyValue = 1;
-                    let urlID = `/rg-transporte-executivo/${nameID}`;
+                    let urlID = `/sitetree/${nameID}`;
                     const statusURL = await roteadorURL(keyValue, urlID);
                     console.log(statusURL);
 
@@ -2382,7 +2418,7 @@
 
                             //Iniciando roteador de URL
                             let keyValue = 1;
-                            let urlID = `/rg-transporte-executivo/${nameID}`;
+                            let urlID = `/sitetree/${nameID}`;
                             const statusURL = await roteadorURL(keyValue, urlID);
                             console.log(statusURL);
 
@@ -2436,7 +2472,7 @@
 
                             //Iniciando roteador de URL
                             let keyValue = 1;
-                            let urlID = `/rg-transporte-executivo/${nameID}`;
+                            let urlID = `/sitetree/${nameID}`;
                             const statusURL = await roteadorURL(keyValue, urlID);
                             console.log(statusURL);
 
@@ -2490,7 +2526,7 @@
 
                             //Iniciando roteador de URL
                             let keyValue = 1;
-                            let urlID = `/rg-transporte-executivo/${nameID}`;
+                            let urlID = `/sitetree/${nameID}`;
                             const statusURL = await roteadorURL(keyValue, urlID);
                             console.log(statusURL);
 
@@ -2562,7 +2598,7 @@
 
                             //Iniciando roteador de URL
                             let keyValue = 1;
-                            let urlID = `/rg-transporte-executivo/${nameID}`;
+                            let urlID = `/sitetree/${nameID}`;
                             const statusURL = await roteadorURL(keyValue, urlID);
                             console.log(statusURL);
 
@@ -2624,7 +2660,7 @@
 
                     //Iniciando roteador de URL
                     let keyValue = 1;
-                    let urlID = `/rg-transporte-executivo/${nameID}`;
+                    let urlID = `/sitetree/${nameID}`;
                     const statusURL = await roteadorURL(keyValue, urlID);
                     console.log(statusURL);
 
@@ -2679,7 +2715,7 @@
 
                     //Iniciando roteador de URL
                     let keyValue = 1;
-                    let urlID = `/rg-transporte-executivo/${nameID}`;
+                    let urlID = `/sitetree/${nameID}`;
                     const statusURL = await roteadorURL(keyValue, urlID);
                     console.log(statusURL);
 
@@ -2734,7 +2770,7 @@
 
                     //Iniciando roteador de URL
                     let keyValue = 1;
-                    let urlID = `/rg-transporte-executivo/${nameID}`;
+                    let urlID = `/sitetree/${nameID}`;
                     const statusURL = await roteadorURL(keyValue, urlID);
                     console.log(statusURL);
 
@@ -2789,7 +2825,7 @@
 
                     //Iniciando roteador de URL
                     let keyValue = 1;
-                    let urlID = `/rg-transporte-executivo/${nameID}`;
+                    let urlID = `/sitetree/${nameID}`;
                     const statusURL = await roteadorURL(keyValue, urlID);
                     console.log(statusURL);
 
@@ -2844,7 +2880,7 @@
 
                     //Iniciando roteador de URL
                     let keyValue = 1;
-                    let urlID = `/rg-transporte-executivo/${nameID}`;
+                    let urlID = `/sitetree/${nameID}`;
                     const statusURL = await roteadorURL(keyValue, urlID);
                     console.log(statusURL);
 
@@ -2917,7 +2953,7 @@
 
                     //Iniciando roteador de URL
                     let keyValue = 1;
-                    let urlID = `/rg-transporte-executivo/${nameID}`;
+                    let urlID = `/sitetree/${nameID}`;
                     const statusURL = await roteadorURL(keyValue, urlID);
                     console.log(statusURL);
 
@@ -2972,7 +3008,7 @@
 
                     //Iniciando roteador de URL
                     let keyValue = 1;
-                    let urlID = `/rg-transporte-executivo/${nameID}`;
+                    let urlID = `/sitetree/${nameID}`;
                     const statusURL = await roteadorURL(keyValue, urlID);
                     console.log(statusURL);
 
@@ -3003,7 +3039,7 @@
             //     console.log("Voltando estado anterior url")
             // })
 
-            console.log("RT Transporte Executivo - v.1.0.0");
+            console.log("RT Transporte Executivo - v.1.0.1");
             console.log(Date()); 
 
         })
