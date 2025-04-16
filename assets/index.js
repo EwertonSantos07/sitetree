@@ -124,6 +124,7 @@
             setTimeout(() => {
                 loadingScreen.style.opacity = '0';
                 loadingScreen.style.left = '100vw';
+                window.scrollTo(0, 0);
                 setTimeout(() => {
                     loadingScreen.style.display = 'none';
                     let statusOff = "Loading Screen Encerrada";
@@ -160,7 +161,7 @@
 
                     console.log(iframe, "ajustando altura");
                     console.count("Altura do iFrame ajustada: ");
-                    window.scrollTo(0, 0);
+                    //window.scrollTo(0, 0);
                     resolve(iframeDocument);
                 }
             } catch (error) {
@@ -3039,7 +3040,7 @@
             //     console.log("Voltando estado anterior url")
             // })
 
-            console.log("RT Transporte Executivo - v.1.0.1");
+            console.log("RT Transporte Executivo - v.1.0.2");
             console.log(Date()); 
 
         })
