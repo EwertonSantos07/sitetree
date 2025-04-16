@@ -387,6 +387,7 @@ footer {
 .ft-container-direitos {
     box-sizing: border-box;
     border: 0px solid yellowgreen;
+    border-bottom: 1px solid white;
     margin: 0;
     padding: 0;
     padding-bottom: 10px;
@@ -582,6 +583,8 @@ footer {
         Arial, Helvetica, sans-serif;
     font-weight: normal;
     padding: 0;
+    padding-top: 5px;
+    padding-bottom: 5px;
     margin: 0;
     color: white;
 }
@@ -598,6 +601,12 @@ footer {
 }
 
 /* RECURSIVIDADE FOOTER CONFIGS */
+@media only screen and (max-width: 1157px) {
+    .ft-container-direitos-slogan {
+        margin-bottom: 15px;
+    }
+}
+
 @media only screen and (max-width: 1148px) {
     .ft-container-01 {
         justify-content: space-around;
@@ -605,6 +614,16 @@ footer {
 
     .ft-container-01-lista {
         margin-bottom: 20px;
+    }
+}
+
+@media only screen and (max-width: 1144px) {
+    #ft-frame-01-politica {
+        height: auto;
+    }
+    
+    .ft-container-direitos-slogan {
+        margin-top: 0px;
     }
 }
 
