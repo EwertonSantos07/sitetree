@@ -97,15 +97,19 @@ export async function startOperations(nameID, X, constArray) {
             const statusMOculto = await changeCSSOculto(constArray);
             console.log(statusMOculto, nameID);
         }
-        
-        //Iniciando roteador de URL - Deixar ativado no Live Server (VSCode)
-        //history.pushState({ Page: nameID }, nameID, '');
-        //console.log(window.history.state);
 
-        //Iniciando roteador de URL - Deixar aativado no servidor Apache
-        let urlID = `/portfolio/${nameID}`;
-        const statusURL = await roteadorURL(1, urlID);
-        console.log(statusURL);
+        //Condição para roteamento de links - Live Server
+        if(window.location.origin == "http://127.0.0.1:5500") {
+            history.pushState({ Page: nameID }, nameID, '');
+            console.log(window.history.state, "Internal Pages");
+
+        //Condição para roteamento de links - Servidor    
+        } else {
+            let urlID = `/portfolio/${nameID}`;
+            const statusURL = await roteadorURL(1, urlID);
+            console.log(statusURL);
+        }
+        
 
         //Caminho para atualização DOM
         let SRCiframe = `assets/HTML/${nameID}.html`;

@@ -18,15 +18,15 @@ export async function roteadorURL(keyValue, pathURL) {
         if(keyValue == 0) {
                 
             //Atualizando url navegador ao iniciar site ou atualizar página
-            if(pathURL == "/portfolio/") {
+            if(pathURL == "/criacao-de-sites/") {
                 
-                const homeUrl = "/portfolio/home";
+                const homeUrl = "/criacao-de-sites/home";
                 const newState = {page: 'home'};
                 const newTitle = 'home';
                 window.history.replaceState(newState, newTitle, homeUrl);
                 console.log("Site foi atualizado com url padrão!!!");
             } else {
-                const homeUrl = "/portfolio/home";
+                const homeUrl = "/criacao-de-sites/home";
                 const newState = {page: 'home'};
                 const newTitle = 'home';
                 window.history.pushState(newState, newTitle, homeUrl);

@@ -11,7 +11,7 @@ import {closeHideMenu} from './6-menu-oculto.js';
 (function(win, doc){
     'use strict';
 
-    console.log("Iniciando Javascript Ewerton Santos Versão 1.0.0")
+    console.log("Iniciando Javascript Ewerton Santos Versão 1.0.1")
     console.log("\n");
 
     //Iniciando DOM
@@ -54,7 +54,7 @@ import {closeHideMenu} from './6-menu-oculto.js';
         //Condição para roteamento de links
         if(window.location.origin == "http://127.0.0.1:5500") {
             history.replaceState({ Page: 'home' }, 'Home', '');
-            console.log(window.history.state);
+            console.log(window.history.state, "First load");
         } else {
             const statusURL = await roteadorURL(0, window.location.pathname);
             console.log(statusURL);
