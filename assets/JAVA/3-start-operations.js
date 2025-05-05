@@ -105,7 +105,7 @@ export async function startOperations(nameID, X, constArray) {
 
         //Condição para roteamento de links - Servidor    
         } else {
-            let urlID = `/portfolio/${nameID}`;
+            let urlID = `/criacao-de-sites/${nameID}`;
             const statusURL = await roteadorURL(1, urlID);
             console.log(statusURL);
         }
