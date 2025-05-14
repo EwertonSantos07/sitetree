@@ -45,7 +45,7 @@ main #fa-code {
     padding: 0;
 }
 
-.ctt-btn {
+.hist-btn {
     box-sizing: border-box;
     color: white;
     font-family: inherit;
@@ -66,7 +66,7 @@ main #fa-code {
     cursor: pointer;
 }
 
-.ctt-btn:hover {
+.hist-btn:hover {
     color: yellowgreen;
     transition-duration: 0.8s;
 }

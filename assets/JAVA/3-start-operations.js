@@ -170,7 +170,7 @@ export async function startOperations(nameID, X, constArray) {
 
         //Capturando objetos específicos
         if(nameID == "historico") {
-            let btnHistoricoAction = statusAltura.querySelector(".ctt-btn");
+            let btnHistoricoAction = statusAltura.querySelector(".hist-btn");
             console.log(btnHistoricoAction);
 
             //Capturando event click btn ação
