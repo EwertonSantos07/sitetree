@@ -47,6 +47,16 @@ import {closeHideMenu} from './6-menu-oculto.js';
 
         console.log('Carregando...');
 
+        //Capturando elementos index!!!
+        const headerLayout = document.querySelector('header');
+        const iframeLayout = document.querySelector('iframe');
+        const footerLayout = document.querySelector('footer');
+
+        //Alterando display none para flex!!!
+        headerLayout.style.display = "flex";
+        iframeLayout.style.display = "flex";
+        footerLayout.style.display = "block";
+
         //Capturando largura da tela!!!
         const larguraScreen = screen.width;
         console.log("Width Screen Start:", larguraScreen, "px");

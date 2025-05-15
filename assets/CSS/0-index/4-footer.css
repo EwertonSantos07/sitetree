@@ -3,6 +3,7 @@
 @import url('https://fonts.googleapis.com/css2?family=League+Gothic&family=Tangerine:wght@400;700&family=Truculenta:opsz,wght@12..72,100..900&display=swap');
 
 footer {
+    display: none;
     box-sizing: border-box;
     border: 0px solid yellowgreen;
     /* background: #7b68ee; */
