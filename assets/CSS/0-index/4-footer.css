@@ -131,7 +131,7 @@ footer {
     flex-direction: column;
     flex-wrap: wrap;
     width: 280px;
-    height: 200px;
+    height: 220px;
     align-items: center;
     justify-content: flex-start;
 }
@@ -264,6 +264,10 @@ footer {
 }
 
 @media only screen and (max-width: 1144px) {
+    #ft-frame-01-topicos {
+        height: auto;
+    }
+
     #ft-frame-01-politica {
         height: auto;
     }

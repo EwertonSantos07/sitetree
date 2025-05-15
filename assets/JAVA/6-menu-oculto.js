@@ -2,11 +2,12 @@
 export async function changeCSSOculto(listOculto) {
     return new Promise((resolve) => {
         listOculto[5].style.cursor = "wait";
-        listOculto[8].style.display = "none";
-        listOculto[9].style.display = "none";
-        listOculto[10].style.display = "none";
-        listOculto[11].style.display = "none";
-        listOculto[12].style.display = "flex";
+        listOculto[8].style.display = "none"; //Home
+        listOculto[9].style.display = "none"; //Histórico
+        listOculto[10].style.display = "none"; //Blog
+        listOculto[26].style.display = "none"; //Updates
+        listOculto[11].style.display = "none"; //Contato
+        listOculto[12].style.display = "flex"; //Loading...
         listOculto[12].style.cursor = "wait";
 
         let statusCSSOculto = "Propriedades Menu Oculto Loading alteradas";
@@ -18,11 +19,12 @@ export async function changeCSSOculto(listOculto) {
 export async function retornaCSSOculto(listOculto) {
     return new Promise((resolve) => {
         listOculto[5].style.cursor = "default";
-        listOculto[8].style.display = "";
-        listOculto[9].style.display = "";
-        listOculto[10].style.display = "";
-        listOculto[11].style.display = "";
-        listOculto[12].style.display = "none";
+        listOculto[8].style.display = ""; //Home
+        listOculto[9].style.display = ""; //Histórico
+        listOculto[10].style.display = ""; //Blog
+        listOculto[26].style.display = ""; //Updates
+        listOculto[11].style.display = ""; //Contato
+        listOculto[12].style.display = "none"; //Loading...
         listOculto[12].style.cursor = "";
 
         let statusCSSOculto = "Propriedades Menu Oculto Loading Default";

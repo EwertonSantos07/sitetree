@@ -152,6 +152,18 @@ import {closeHideMenu} from './6-menu-oculto.js';
             })
         }
 
+        //Evento click botão UPDATES nav bar
+        if(constArray[25]) {
+            constArray[25].addEventListener("click", async function(event) {
+                
+                //Capturando data-link
+                let nameID = constArray[25].dataset.link;
+                const statusOperations = await startOperations(nameID, 0, constArray);
+                console.log(statusOperations)
+
+            })
+        }
+
         //Evento click botão CONTATO nav bar
         if(constArray[4]) {
             constArray[4].addEventListener("click", async function(event) {
@@ -229,6 +241,17 @@ import {closeHideMenu} from './6-menu-oculto.js';
             })
         }
 
+        //Capturando click botão UPDATES menu oculto - OK
+        if (constArray[26]) {
+            constArray[26].addEventListener("click", async function(event) {
+
+                //Capturando data-link
+                let nameID = constArray[26].dataset.link;
+                const statusOperations = await startOperations(nameID, 5, constArray);
+                console.log(statusOperations)
+            })
+        }
+
         //Capturando click botão CONTATO menu oculto - OK
         if (constArray[11]) {
             constArray[11].addEventListener("click", async function(event) {
@@ -272,6 +295,17 @@ import {closeHideMenu} from './6-menu-oculto.js';
                 console.log(statusOperations);
             })
         }
+
+        //Capturando click botão UPDATES footer - OK
+        if (constArray[27]) {
+            constArray[27].addEventListener("click", async function(event) {
+
+                //Capturando data-link
+                let nameID = constArray[27].dataset.link;
+                const statusOperations = await startOperations(nameID, 13, constArray);
+                console.log(statusOperations);
+            })
+        } 
 
         //Capturando click botão CONTATO footer - OK
         if (constArray[17]) {

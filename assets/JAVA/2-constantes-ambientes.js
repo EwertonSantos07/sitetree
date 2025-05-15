@@ -49,8 +49,13 @@ export async function constAmbient() {
         let footerHospedagem = document.querySelector("#ft-hospedagem");
         let footerSobre = document.querySelector("#ft-sobre");
 
+        //Capturando novos objetos após UPDATES!!!
+        let navUpdates = document.querySelector("#navbar-updates");
+        let ocultoUpdates = document.querySelector("#menu-oculto-updates");
+        let footerUpdates = document.querySelector("#ft-updates");
+
         //Inserindo constantes de ambiente do sistema no array!
-        constArray.push(navBar, navHome, navHistorico, navBlog, navContato, menuOculto, openMenu, closeMenu, ocultoHome, ocultoHistorico, ocultoBlog, ocultoContato, ocultoLoading, footerMenu, footerHome, footerHistorico, footerBlog, footerContato, footerPol, footerPolitica, footerTop, footerSite, footerClientes, footerHospedagem, footerSobre);
+        constArray.push(navBar, navHome, navHistorico, navBlog, navContato, menuOculto, openMenu, closeMenu, ocultoHome, ocultoHistorico, ocultoBlog, ocultoContato, ocultoLoading, footerMenu, footerHome, footerHistorico, footerBlog, footerContato, footerPol, footerPolitica, footerTop, footerSite, footerClientes, footerHospedagem, footerSobre, navUpdates, ocultoUpdates, footerUpdates);
         resolve(constArray);
     });
 };

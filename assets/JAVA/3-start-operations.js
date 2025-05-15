@@ -1,7 +1,7 @@
 import {atualizaIframe} from './1-propriedades-iframe.js';
 import {alteraAlturaIframe} from './1-propriedades-iframe.js';
 import {showLoadingScreen} from './5-screen-loading.js';
-import {abaContato, abaHistorico, abaHome, abaPolitica} from './4-abas-stilos.js';
+import {abaContato, abaHistorico, abaHome, abaPolitica, abaUpdates} from './4-abas-stilos.js';
 import {offLoadingScreen} from './5-screen-loading.js';
 import {changeCSSOculto} from './6-menu-oculto.js';
 import {closeHideMenu} from './6-menu-oculto.js';
@@ -139,6 +139,11 @@ export async function startOperations(nameID, X, constArray) {
             const statusCSS = await abaPolitica(constArray, nameID);
             console.log(statusCSS);
         }
+
+        if(nameID == "updates") {
+            const statusCSS = await abaUpdates(constArray, nameID);
+            console.log(statusCSS);
+        }
         
         //Atualizando altura do iframe
         const statusAltura = await alteraAlturaIframe();
@@ -176,6 +181,20 @@ export async function startOperations(nameID, X, constArray) {
             //Capturando event click btn ação
             if (btnHistoricoAction) {
                 btnHistoricoAction.addEventListener("click", function() {
+                //window.alert(`Botão AÇÃO ${nameID} foi acionado!`)
+                window.open("https://tinyurl.com/2sunmwe2", "_blank");
+                })
+            }
+        }
+
+        //Capturando objetos específicos
+        if(nameID == "updates") {
+            let btnUpdatesAction = statusAltura.querySelector(".up-btn");
+            console.log(btnUpdatesAction);
+
+            //Capturando event click btn ação
+            if (btnUpdatesAction) {
+                btnUpdatesAction.addEventListener("click", function() {
                 //window.alert(`Botão AÇÃO ${nameID} foi acionado!`)
                 window.open("https://tinyurl.com/2sunmwe2", "_blank");
                 })
