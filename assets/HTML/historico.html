@@ -92,9 +92,10 @@
 
             //IP para teste local: 127.0.0.1
             //IP para teste no servidor: 192.168.15.38
-            //const ipLocal = '191.23.11.28'; 
-            const ipLocal = "techinfo.webredirect.org"
-            const urlConteudo = `http://${ipLocal}:5000/api/conteudo`;
+            //const ipLocal = '127.0.0.1'; //Localhost
+            //const ipLocal = '191.255.186.168'; //IP Público Dinâmico
+            const ipLocal = "techinfo.webredirect.org" //Sub-domínio
+            const urlConteudo = `https://${ipLocal}:5000/api/conteudo`;
 
             // Função para buscar e exibir dados de texto
             async function buscarConteudo() {
@@ -121,7 +122,7 @@
             // Função para buscar e exibir dados de imagem
             async function buscarImgPath(ip, PathImg) {
                 return new Promise(async (resolve) => {
-                    const urlLogo = `http://${ipLocal}:5000/logos/${PathImg}`;
+                    const urlLogo = `https://${ipLocal}:5000/logos/${PathImg}`;
                     const response2 = await fetch(urlLogo)
                     console.log(response2)
 
