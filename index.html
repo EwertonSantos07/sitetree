@@ -1,30 +1,54 @@
 <!-- Estrutura Inicial da Página-->
-<!-- Last update: 23/05/2025 as 08:31 -->
+<!-- Last update: 23/05/2025 as 11:56 -->
 
 <!DOCTYPE html>
 <html lang="pt-br">
     <head>
 
-        <!-- Google tag (gtag.js) GA4 -->
-        <script async src="https://www.googletagmanager.com/gtag/js?id=G-28WKJ8L6QV"></script>
+        <!-- Local Environment Test sessionStorage -->
         <script>
-            window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);}
-            gtag('js', new Date());
-
-            gtag('config', 'G-28WKJ8L6QV');
+            const localEnvironment = 1
+            sessionStorage.setItem("localEnvironment", localEnvironment)
+            console.log("Variável 'localEnvironment' as:", localEnvironment)
         </script>
 
-        <!-- Google Tag Manager GTM -->
+        <!-- Session Storage Verification -->
         <script>
-            (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-                new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-                j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-                'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-            })(window,document,'script','dataLayer','GTM-KDCXQ28J');
-        </script>
-        <!-- End Google Tag Manager -->
+            const islocalEnvironment = sessionStorage.getItem('localEnvironment')
+            const intlocalEnvironment = parseInt(islocalEnvironment)
+            if (intlocalEnvironment === 1) {
+                
+                // Tag GA4
+                const ga4MeasurementId = 'G-28WKJ8L6QV';
 
+                // Head Element GA4
+                const script1 = document.createElement("script")
+                script1.async = true
+                script1.src = `https://www.googletagmanager.com/gtag/js?id=${ga4MeasurementId}`
+                document.head.appendChild(script1)
+
+                // Data Layer GA4
+                const script2 = document.createElement("script")
+                script2.textContent = `
+                    window.dataLayer = window.dataLayer || [];
+                    function gtag(){dataLayer.push(arguments);}
+                    gtag('js', new Date());
+
+                    gtag('config', '${ga4MeasurementId}')
+                `;
+                document.head.appendChild(script2);
+
+                // Google Tag Manager GTM
+                (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+                    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+                    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+                })(window,document,'script','dataLayer','GTM-KDCXQ28J');
+
+            } else {
+                console.log("Index.html - Tag GA4 Desativada!")
+            }
+        </script>
+        
         <meta charset="UTF-8">
         <meta
             name="viewport"
@@ -56,13 +80,26 @@
 
     <body>
 
-        <!-- Google Tag Manager (noscript) -->
-        <noscript>
-            <iframe src="https://www.googletagmanager.com/ns.html?id=GTM-KDCXQ28J"
-                height="0" width="0" style="display:none;visibility:hidden">
-            </iframe>
-        </noscript>
-        <!-- End Google Tag Manager (noscript) -->
+        <!-- Iframe GTM -->
+        <script>
+            const islocalEnvironment2 = sessionStorage.getItem('localEnvironment')
+            const intlocalEnvironment2 = parseInt(islocalEnvironment2)
+            if (intlocalEnvironment2 === 1) {
+
+                // Google Tag Manager (noscript)
+                const noScript = document.createElement("noscript")
+                const eliframe = document.createElement("iframe")
+                eliframe.src = "https://www.googletagmanager.com/ns.html?id=GTM-KDCXQ28J"
+                eliframe.height = "0"
+                eliframe.width = "0"
+                eliframe.style.display = "none"
+                eliframe.style.visibility = "hidden"
+                noScript.appendChild(eliframe)
+                document.body.prepend(noScript)
+            } else {
+                console.log("Iframe noscript GTM desativado!")
+            }
+        </script>
         
         <!-- Cabeçalho do Site -->
         <header>
@@ -206,7 +243,7 @@
 
         <!-- Iframe exibição de conteúdos -->
         <iframe
-            class="iframe"
+            class="main-iframe"
             scrolling="no"
             name="bloco_central"
             src="assets/HTML/home.html">

@@ -49,7 +49,7 @@ import {closeHideMenu} from './6-menu-oculto.js';
 
         //Capturando elementos index!!!
         const headerLayout = document.querySelector('header');
-        const iframeLayout = document.querySelector('iframe');
+        const iframeLayout = document.querySelector('.main-iframe');
         const footerLayout = document.querySelector('footer');
 
         //Alterando display none para flex!!!

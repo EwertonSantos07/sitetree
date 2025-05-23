@@ -1,6 +1,6 @@
 @charset "UTF-8";
 
-.iframe {
+.main-iframe {
     box-sizing: border-box;
     border: 0px solid black;
     display: none;

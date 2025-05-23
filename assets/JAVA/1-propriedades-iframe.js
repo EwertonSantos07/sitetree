@@ -1,7 +1,7 @@
 //Função para ajustar altura do iframe
 export async function alteraAlturaIframe() {
     return new Promise((resolve) => {
-        let iframe = document.querySelector(".iframe");
+        let iframe = document.querySelector(".main-iframe");
         let iframeDocument = iframe.contentDocument || iframe.contentWindow.document;
         try {
             if (iframe && iframe.contentWindow && iframe.contentWindow.document && iframe.contentWindow.document.body) {
@@ -19,7 +19,7 @@ export async function alteraAlturaIframe() {
 //Função para atualizar documentação do iframe
 export async function atualizaIframe(path, pagina) {
     return new Promise((resolve) => {
-        let iframe = document.querySelector(".iframe");
+        let iframe = document.querySelector(".main-iframe");
         iframe.src = path; 
 
         // Adiciona uma nova entrada ao histórico do documento pai
