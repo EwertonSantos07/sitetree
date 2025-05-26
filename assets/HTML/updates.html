@@ -6,8 +6,12 @@
         <!-- Session Storage Verification -->
         <script>
             const islocalEnvironment = sessionStorage.getItem('localEnvironment')
+            const statusADM = sessionStorage.getItem('ADMstatus')
             const intlocalEnvironment = parseInt(islocalEnvironment)
-            if (intlocalEnvironment === 1) {
+            const resultInt = (intlocalEnvironment === 1)
+            const resultADM = (statusADM === 'true');
+
+            if (resultInt === true && resultADM === false) {
                 
                 // Tag GA4
                 const ga4MeasurementId = 'G-28WKJ8L6QV';
@@ -35,8 +39,9 @@
                     j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
                 })(window,document,'script','dataLayer','GTM-KDCXQ28J');
 
+                console.log("Updates.html: GA4 e GTM habilitados para essa sessão!");
             } else {
-                console.log("updates.html - Tag GA4 Desativada!")
+                console.log("Updates.html: Ambiente de testes ou ADM em produção, não habilitar TAGS Google!")
             }
         </script>
 
@@ -69,8 +74,12 @@
         <!-- Iframe GTM -->
         <script>
             const islocalEnvironment2 = sessionStorage.getItem('localEnvironment')
+            const statusADM2 = sessionStorage.getItem('ADMstatus')
             const intlocalEnvironment2 = parseInt(islocalEnvironment2)
-            if (intlocalEnvironment2 === 1) {
+            const resultInt2 = (intlocalEnvironment2 === 1)
+            const resultADM2 = (statusADM2 === 'true');
+
+            if (resultInt2 === true && resultADM2 === false) {
 
                 // Google Tag Manager (noscript)
                 const noScript = document.createElement("noscript")
@@ -82,8 +91,10 @@
                 eliframe.style.visibility = "hidden"
                 noScript.appendChild(eliframe)
                 document.body.prepend(noScript)
+
+                console.log("Updates.html: Iframe GTM ativo!!!")
             } else {
-                console.log("Iframe noscript GTM desativado!")
+                console.log("Updates.html: Iframe noscript GTM desativado!")
             }
         </script>
         

@@ -1,5 +1,5 @@
 <!-- Estrutura Inicial da Página-->
-<!-- Last update: 23/05/2025 as 11:56 -->
+<!-- Last update: 26/05/2025 as 12:09 -->
 
 <!DOCTYPE html>
 <html lang="pt-br">
@@ -8,15 +8,35 @@
         <!-- Local Environment Test sessionStorage -->
         <script>
             const localEnvironment = 1
+            const cookieADM = "GA_EXCLUDE_ADM";
+            const tipoADM = typeof cookieADM;
+            let ADMstatus = null;
+            const arrayCookies = document.cookie.split(';'); //Array separador
+            const lenCookies = arrayCookies.length; //Quantidade
+
+            for (let i = 0; i < lenCookies; i++) {
+                const partsCookies = arrayCookies[i].split('=') //Separa valores
+                const tipoParts = typeof partsCookies[0]; //Verifica o tipo valor
+                const statusFindout = (cookieADM === partsCookies[0].trim())
+                if (statusFindout === true) {
+                    ADMstatus = partsCookies[1].trim();
+                }
+            }
             sessionStorage.setItem("localEnvironment", localEnvironment)
-            console.log("Variável 'localEnvironment' as:", localEnvironment)
+            sessionStorage.setItem("ADMstatus", ADMstatus);
+        
+            
         </script>
 
         <!-- Session Storage Verification -->
         <script>
             const islocalEnvironment = sessionStorage.getItem('localEnvironment')
+            const statusADM = sessionStorage.getItem('ADMstatus')
             const intlocalEnvironment = parseInt(islocalEnvironment)
-            if (intlocalEnvironment === 1) {
+            const resultInt = (intlocalEnvironment === 1)
+            const resultADM = (statusADM === 'true');
+
+            if (resultInt === true && resultADM === false) {
                 
                 // Tag GA4
                 const ga4MeasurementId = 'G-28WKJ8L6QV';
@@ -44,8 +64,9 @@
                     j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
                 })(window,document,'script','dataLayer','GTM-KDCXQ28J');
 
+                console.log("Index.html: GA4 e GTM habilitados para essa sessão!");
             } else {
-                console.log("Index.html - Tag GA4 Desativada!")
+                console.log("Index.html: Ambiente de testes ou ADM em produção, não habilitar TAGS Google!")
             }
         </script>
         
@@ -83,8 +104,12 @@
         <!-- Iframe GTM -->
         <script>
             const islocalEnvironment2 = sessionStorage.getItem('localEnvironment')
+            const statusADM2 = sessionStorage.getItem('ADMstatus')
             const intlocalEnvironment2 = parseInt(islocalEnvironment2)
-            if (intlocalEnvironment2 === 1) {
+            const resultInt2 = (intlocalEnvironment2 === 1)
+            const resultADM2 = (statusADM2 === 'true');
+
+            if (resultInt2 === true && resultADM2 === false) {
 
                 // Google Tag Manager (noscript)
                 const noScript = document.createElement("noscript")
@@ -96,8 +121,10 @@
                 eliframe.style.visibility = "hidden"
                 noScript.appendChild(eliframe)
                 document.body.prepend(noScript)
+
+                console.log("Index.html: Iframe GTM ativo!!!")
             } else {
-                console.log("Iframe noscript GTM desativado!")
+                console.log("Index.html: Iframe noscript GTM desativado!")
             }
         </script>
         
