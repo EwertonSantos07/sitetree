@@ -10,6 +10,11 @@
             const intlocalEnvironment = parseInt(islocalEnvironment)
             const resultInt = (intlocalEnvironment === 1)
             const resultADM = (statusADM === 'true');
+            
+            if(sessionStorage.getItem("statusConsole") === 'true') {
+                console.log("Environment: ", resultInt);
+                console.log("ADM: ", resultADM);
+            } 
 
             if (resultInt === true && resultADM === false) {
                 
@@ -39,9 +44,33 @@
                     j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
                 })(window,document,'script','dataLayer','GTM-KDCXQ28J');
 
-                console.log("Politica.html: GA4 e GTM habilitados para essa sessão!");
+                
+                if(sessionStorage.getItem("statusConsole") === 'true') {
+                    console.log("politica.html: GA4 e GTM habilitados para essa sessão!");
+                } 
             } else {
-                console.log("Politica.html: Ambiente de testes ou ADM em produção, não habilitar TAGS Google!")
+                if(sessionStorage.getItem("statusConsole") === 'true') {
+                    console.log("politica.html: Ambiente de testes ou ADM em produção, não habilitar TAGS Google!")
+                }
+            }
+        </script>
+
+        <script>
+            const currentEnvironment = sessionStorage.getItem("proEnvironment")
+            const intproEnvironment = parseInt(currentEnvironment)
+            const linkElement = document.createElement('link');
+            linkElement.rel = 'stylesheet';
+            linkElement.type = 'text/css';
+            if (intproEnvironment === -1) { //Live Server
+                linkElement.href = "/assets/CSS/4-politica/0-politica.css";
+            } else if (intproEnvironment === 0) { //testefiles
+                linkElement.href = "/testefiles/assets/CSS/4-politica/0-politica.css";
+            } else if (intproEnvironment === 1) {
+                linkElement.href = "/criacao-de-sites/assets/CSS/4-politica/0-politica.css";
+            }
+            document.head.appendChild(linkElement);
+            if(sessionStorage.getItem("statusConsole") === 'true') {
+                console.log("LinkElement: ", linkElement)
             }
         </script>
 
@@ -64,12 +93,8 @@
 
         <title>Criação de Sites em Curitiba | Ewerton Santos - Web Designer Profissional</title>
 
-        <link 
-            rel="stylesheet" 
-            href="../CSS/4-politica/0-politica.css">
-
-            <link rel="stylesheet" 
-            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+        <link rel="stylesheet" 
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     </head>
 
     <body>
@@ -95,9 +120,13 @@
                 noScript.appendChild(eliframe)
                 document.body.prepend(noScript)
 
-                console.log("Politica.html: Iframe GTM ativo!!!")
+                if(sessionStorage.getItem("statusConsole") === 'true') {
+                    console.log("sobre.html: Iframe GTM ativo!!!")
+                }
             } else {
-                console.log("Politica.html: Iframe noscript GTM desativado!")
+                if(sessionStorage.getItem("statusConsole") === 'true') {
+                    console.log("sobre.html: Iframe noscript GTM desativado!")
+                }
             }
         </script>
 
@@ -467,6 +496,37 @@
         <p class="pp-container-01-p">
             Este instrumento será regido e interpretado de acordo com a legislação brasileira, sendo eleito o Foro da Comarca de Curitiba, Estado Paraná, para questões a ele relativas, com renúncia expressa a qualquer outro.
         </p>
+
+        <script>
+            // Função para notificar o documento pai que o conteúdo do iframe está pronto
+            function notifyParentIframeReady() {
+                // Verifica se a janela atual está dentro de um iframe e se tem um pai
+                if (window.parent && window.parent !== window) {
+                    
+                    //Definindo Domínio Atual
+                    const currentDomain = sessionStorage.getItem("currentDomain")
+
+                    // Permissions Origins
+                    const parentOrigins = [
+                        currentDomain
+                    ];
+
+                    //Enviando sinal para origem
+                    parentOrigins.forEach(origin => {
+                        window.parent.postMessage('iframeContentReady', origin); 
+                        if(sessionStorage.getItem("statusConsole") === 'true') {
+                            console.log(`%cTentando enviar 'iframeContentReady' para origem: ${origin}`, "color: gray;");
+                        }
+                    })
+
+                    // Status
+                    if(sessionStorage.getItem("statusConsole") === 'true') {
+                        console.log("%cNotificação 'iframeContentReady' enviada para o pai (verifique o console do pai para confirmação).", "color: blue;");
+                    }
+                }
+            }
+            window.addEventListener('load', notifyParentIframeReady);
+        </script>
 
     </body>
 

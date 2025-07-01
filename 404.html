@@ -1,31 +1,95 @@
 <!-- Estrutura Inicial da Página-->
-<!-- Last update: 26/05/2025 as 12:09 -->
+<!-- Last Deploy: 01/07/2025 as 09:44 -->
+<!-- Last update: 01/07/2025 as 09:44 -->
 
 <!DOCTYPE html>
 <html lang="pt-br">
     <head>
 
-        <!-- Local Environment Test sessionStorage -->
+        <!-- Main Variables Definition -->
         <script>
-            const localEnvironment = 1
+
+            //Legenda localEnvironment
+            // 0 ambiente de testes
+            // 1 ambiente de produção
+            sessionStorage.setItem("localEnvironment", 1);
+
+            //Legenda proEnvironment
+            // -1 live server
+            // 0 /testefiles/
+            // 1 /criacao-de-sites/ ***htaccess***
+            sessionStorage.setItem("proEnvironment", 1);
+
+            //Legenda statusHome
+            //false - Carregamento inicial
+            //true - Operação interna de páginas
+            sessionStorage.setItem("statusHome", "false"); //Always keep false
+
+            //Legenda statusADM
+            //false - ADM is not logged
+            //true - ADM is logged
+            sessionStorage.setItem("ADMstatus", null) //Always keep null
+
+            //Legenda scroll status
+            //false - home, carregamento padrão
+            //true - home, carregar e ir para âncora
+            sessionStorage.setItem("scrollStatus", false); //Always keep false
+
+            //Legenda statusConsole
+            //false - No messages in the console
+            //true - Print messages status in the console
+            sessionStorage.setItem("statusConsole", false)
+
+        </script>
+
+        <!-- Verificando se COOKIE ADM ESTÁ NO NAVEGADOR -->
+        <script>
+
             const cookieADM = "GA_EXCLUDE_ADM";
             const tipoADM = typeof cookieADM;
-            let ADMstatus = null;
             const arrayCookies = document.cookie.split(';'); //Array separador
             const lenCookies = arrayCookies.length; //Quantidade
 
             for (let i = 0; i < lenCookies; i++) {
-                const partsCookies = arrayCookies[i].split('=') //Separa valores
+                const partsCookies = arrayCookies[i].split('='); //Separa valores
                 const tipoParts = typeof partsCookies[0]; //Verifica o tipo valor
                 const statusFindout = (cookieADM === partsCookies[0].trim())
                 if (statusFindout === true) {
-                    ADMstatus = partsCookies[1].trim();
+                    sessionStorage.setItem("ADMstatus", partsCookies[1].trim()); 
+                    if(sessionStorage.getItem("statusConsole") === 'true') {
+                        console.log("ADM ATIVO COOKIE NAVEGADOR")
+                    }
                 }
+            }    
+
+            // Função auxiliar para obter um parâmetro da URL MAGIC LINK
+            // Usar o pós link para adm: ?set_adm_cookie=true
+            function getUrlParameter(name) {
+                name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+                var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
+                var results = regex.exec(location.search);
+                return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
             }
-            sessionStorage.setItem("localEnvironment", localEnvironment)
-            sessionStorage.setItem("ADMstatus", ADMstatus);
-        
-            
+
+            // Identificando se link inserindo é magic ?set_adm_cookie=true
+            const setAdmCookieParam = getUrlParameter('set_adm_cookie');
+
+            // Se o parâmetro for encontrado e tiver o valor 'true'
+            if (setAdmCookieParam === 'true') { 
+                
+                if (window.history.replaceState) {
+                    const cleanUrl = window.location.origin + window.location.pathname + window.location.hash;
+                    window.history.replaceState({path: cleanUrl}, '', cleanUrl);
+                } else {
+                    // Fallback para navegadores mais antigos (causará um recarregamento completo)
+                    window.location.href = window.location.origin + window.location.pathname + window.location.hash;
+                }
+
+                sessionStorage.setItem("ADMstatus", true);
+                if(sessionStorage.getItem("statusConsole") === 'true') {
+                    console.log("MAGIC LINK ADM IS UP")
+                } 
+            }
         </script>
 
         <!-- Session Storage Verification -->
@@ -36,6 +100,11 @@
             const resultInt = (intlocalEnvironment === 1)
             const resultADM = (statusADM === 'true');
 
+            if(sessionStorage.getItem("statusConsole") === 'true') {
+                console.log("Environment: ", resultInt);
+                console.log("ADM: ", resultADM);
+            } 
+            
             if (resultInt === true && resultADM === false) {
                 
                 // Tag GA4
@@ -62,11 +131,43 @@
                 (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
                     new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
                     j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-                })(window,document,'script','dataLayer','GTM-KDCXQ28J');
+                })(window,document,'script','dataLayer','G-28WKJ8L6QV');
 
-                console.log("Index.html: GA4 e GTM habilitados para essa sessão!");
+                if(sessionStorage.getItem("statusConsole") === 'true') {
+                    console.log("Index.html: GA4 e GTM habilitados para essa sessão!");
+                } 
             } else {
-                console.log("Index.html: Ambiente de testes ou ADM em produção, não habilitar TAGS Google!")
+                if(sessionStorage.getItem("statusConsole") === 'true') {
+                    console.log("Index.html: Ambiente de testes ou ADM em produção, não habilitar TAGS Google!")
+                } 
+            }
+        </script>
+
+        <!-- Dominio -->
+        <script>
+            const currentEnvironment = sessionStorage.getItem("proEnvironment")
+            const intproEnvironment = parseInt(currentEnvironment)
+            let baseURL = null;
+            if (intproEnvironment === -1) {
+                baseURL = "/";
+            } else if (intproEnvironment === 0) {
+                baseURL = "/testefiles/";
+            } else if (intproEnvironment === 1) {
+                baseURL = "/criacao-de-sites/";
+            }
+
+            let baseTag = document.createElement('base');
+            baseTag.href = baseURL;
+            document.head.prepend(baseTag);
+            sessionStorage.setItem("pathDomain", baseURL);
+            if(sessionStorage.getItem("statusConsole") === 'true') {
+                console.log(`Base href definido como: ${baseURL}`)
+            }
+            
+            // Montando Domínio
+            sessionStorage.setItem("currentDomain", `${window.location.origin}${baseURL}`)
+            if(sessionStorage.getItem("statusConsole") === 'true') {
+                console.log("Current Domain: ", sessionStorage.getItem("currentDomain"))
             }
         </script>
         
@@ -75,15 +176,15 @@
             name="viewport"
             content="width=device-width, initial-scale=1.0">
 
-        <meta
-            name="description"
-            content="Ewerton Santos é um profissional especializado em criação de sites em Curitiba, PR. Desenvolvemos websites personalizados e responsivos para empresas e indivíduos. Solicite um orçamento!">
-
         <meta 
             name="keywords" 
             content="criação de sites, desenvolvimento web, web designer Curitiba, sites profissionais, orçamento sites">
 
-        <title>Criação de Sites em Curitiba | Ewerton Santos - Web Designer Profissional</title>
+        <meta
+            name="description"
+            content="Ewerton Santos é um profissional especializado em criação de sites em Curitiba, PR. Desenvolvemos websites personalizados e responsivos para empresas e indivíduos. Solicite um orçamento!">
+
+        <title>Criação de Sites em Curitiba | Ewerton Santos</title>
 
         <link 
             rel="shortcut icon" 
@@ -101,7 +202,6 @@
 
     <body>
 
-        <!-- Iframe GTM -->
         <script>
             const islocalEnvironment2 = sessionStorage.getItem('localEnvironment')
             const statusADM2 = sessionStorage.getItem('ADMstatus')
@@ -122,9 +222,13 @@
                 noScript.appendChild(eliframe)
                 document.body.prepend(noScript)
 
-                console.log("Index.html: Iframe GTM ativo!!!")
+                if(sessionStorage.getItem("statusConsole") === 'true') {
+                    console.log("Index.html: Iframe GTM ativo!!!")
+                }
             } else {
-                console.log("Index.html: Iframe noscript GTM desativado!")
+                if(sessionStorage.getItem("statusConsole") === 'true') {
+                    console.log("Index.html: Iframe noscript GTM desativado!")
+                }
             }
         </script>
         
@@ -164,6 +268,35 @@
                     BLOG
                 </a>
 
+                <div 
+                    class="navbar-dropdown">
+                    <a  
+                        id="navbar-servicos"
+                        class="navbar-text"
+                        target="bloco_central"
+                        data-link="servicos"
+                        role="button"
+                        title="Outros Serviços">
+                            SERVIÇOS
+                            <i class="fa fa-angle-down" id="icon-angle-down"></i>
+                    </a>
+
+                    <div
+                        class="dropdown-content">
+                        <a 
+                            id="dropdown-software"
+                            class="dropdown-content-text" 
+                            target="bloco_central"
+                            data-link="software"
+                            role="button"
+                            style="cursor: pointer"
+                            title="Sistema de Gestão">
+                            Software
+                        </a>
+                    </div>
+
+                </div>
+
                 <a  
                     id="navbar-updates"
                     class="navbar-text"
@@ -190,6 +323,41 @@
                 class="open-menu">
                 &#9776;
             </button>
+
+            <!-- Média de Avaliações -->
+            <p class="media-info-head">
+                Média de Avaliações: 5.0<br>
+                <i class="fa">
+                    &#xf005;
+                </i>
+                <i class="fa">
+                    &#xf005;
+                </i>
+                <i class="fa">
+                    &#xf005;
+                </i>
+                <i class="fa">
+                    &#xf005;
+                </i>
+                <i class="fa">
+                    &#xf005;
+                </i>
+            </p>
+        </header>
+
+        <!-- Section Loading durante processamentos -->
+        <section class="section-screen-loading">
+            <div
+                class="loading-screen">
+                <h1
+                    class="loading-text">
+                    Loading...
+                </h1>
+            </div>
+        </section>
+
+        <!-- Section Menu Oculto Menu -->
+        <section class="section-menu-oculto">
 
             <!-- Menu Oculto Navegação -->
             <div class="menu-oculto">
@@ -229,6 +397,17 @@
                     BLOG
                 </a>
 
+                <a 
+                    id="menu-oculto-software"
+                    class="menu-oculto-text" 
+                    target="bloco_central"
+                    data-link="software"
+                    role="button"
+                    style="cursor: pointer"
+                    title="Software de Gestão">
+                    Software
+                </a>
+
                 <a  
                     id="menu-oculto-updates"
                     class="menu-oculto-text"
@@ -256,18 +435,8 @@
                     Loading...
                 </h1>
             </div>
-
-            <!-- Tela de carregamento -->
-            <div
-                class="loading-screen">
-                <h1
-                    class="loading-text">
-                    Loading...
-                </h1>
-            </div>
-
-        </header>
-
+        </section>
+            
         <!-- Iframe exibição de conteúdos -->
         <iframe
             class="main-iframe"
@@ -280,7 +449,7 @@
         <footer>
             <div class="ft-container-01">
                 
-                <div class="ft-container-01-lista">
+                <!-- <div class="ft-container-01-lista">
                     <a 
                         class="footer-imglink"
                         title="Logotipo Ewerton Santos Criação de Sites Curitiba">
@@ -290,7 +459,7 @@
                             alt="Logotipo Ewerton Santos Criação de Sites Curitiba">
                         </img>
                     </a>
-                </div>
+                </div> -->
                 
 
                 <div class="ft-container-01-lista">
@@ -429,6 +598,29 @@
 
                 </div>
 
+                <!-- Menu Outros Serviços -->
+                <div class="ft-container-01-lista">
+                    <p 
+                        id="ft-menu"
+                        class="ft-container-01-head">
+                        Outros Serviços
+                    </p>
+
+                    <a 
+                        class="ft-container-01-link"
+                        target="bloco_central"
+                        title="Sistema de Gestão">
+                        <p 
+                            id="ft-software"
+                            class="ft-container-01-text"
+                            data-link="software"
+                            role="button">
+                            SOFTWARE
+                        </p>
+                    </a>
+                </div>
+
+                <!-- Menu Política e Privacidade -->
                 <div
                     id="ft-frame-01-politica"
                     class="ft-container-01-lista">

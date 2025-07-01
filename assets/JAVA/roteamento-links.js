@@ -18,19 +18,24 @@ export async function roteadorURL(keyValue, pathURL) {
         if(keyValue == 0) {
                 
             //Atualizando url navegador ao iniciar site ou atualizar página
-            if(pathURL == "/criacao-de-sites/") {
+            if(pathURL == sessionStorage.getItem("pathDomain")) {
                 
-                const homeUrl = "/criacao-de-sites/home";
+                const homeUrl = "home";
                 const newState = {page: 'home'};
                 const newTitle = 'home';
                 window.history.replaceState(newState, newTitle, homeUrl);
-                console.log("Site foi atualizado com url padrão!!!");
+                if(sessionStorage.getItem("statusConsole") === 'true') {
+                    console.log("Site foi atualizado com url padrão!!!");
+                }
             } else {
-                const homeUrl = "/criacao-de-sites/home";
+                //const homeUrl = `/${sessionStorage.getItem("pathDomain")}home`;
+                const homeUrl = "home"
                 const newState = {page: 'home'};
                 const newTitle = 'home';
                 window.history.pushState(newState, newTitle, homeUrl);
-                console.log("Site foi atualizado com url diferente do inicial!");
+                if(sessionStorage.getItem("statusConsole") === 'true') {
+                    console.log("Site foi atualizado com url diferente do inicial!");
+                }
             }
 
         } else if(keyValue == 1) {
@@ -40,9 +45,10 @@ export async function roteadorURL(keyValue, pathURL) {
             const newState = {page: lastPart};
             const newTitle = lastPart;
             window.history.pushState(newState, newTitle, targetUrl);
-            console.log("Operação para páginas internas!!!");
+            if(sessionStorage.getItem("statusConsole") === 'true') {
+                console.log("Operação para páginas internas!!!", lastPart);
+            }
         }
-
         resolve(window.history.state, "Page");
     })
 }

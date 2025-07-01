@@ -1,7 +1,7 @@
 import {atualizaIframe} from './1-propriedades-iframe.js';
 import {alteraAlturaIframe} from './1-propriedades-iframe.js';
 import {showLoadingScreen} from './5-screen-loading.js';
-import {abaContato, abaHistorico, abaHome, abaPolitica, abaUpdates} from './4-abas-stilos.js';
+import {abaContato, abaHistorico, abaHome, abaPolitica, abaUpdates, abaSoft} from './4-abas-stilos.js';
 import {offLoadingScreen} from './5-screen-loading.js';
 import {changeCSSOculto} from './6-menu-oculto.js';
 import {closeHideMenu} from './6-menu-oculto.js';
@@ -10,7 +10,7 @@ import {roteadorURL} from './roteamento-links.js';
 
 export async function scrollScreenTopic(topicScroll) {
     return new Promise(async (resolve) => {
-        console.log(topicScroll);
+        
         //Ajustando Scroll Seção Criação de Sites
         if(topicScroll == "sites") {
             const statusAltura = await alteraAlturaIframe();
@@ -81,81 +81,133 @@ export async function homeStartActions(Action) {
 }
 
 //Funções
-export async function startOperations(nameID, X, constArray) {
+export async function startOperations(nameID, X, varsArray) {
     return new Promise(async (resolve) => {
-        console.clear();
-        console.log(Date());
 
-        if(X == 0 || X == 13 || X == 20) {
-            //Iniciando tela de carregamento
-            const statusLoading = await showLoadingScreen(nameID);
-            console.log(statusLoading, nameID);
+        if(sessionStorage.getItem("statusConsole") === 'true') {
+            console.clear();
+            console.log(Date());
         }
 
+        // Ativa tela temporaria de carregamento...
+        if (X === 0 || X === 13 || X === 20) {
+            const statusLoading = await showLoadingScreen(nameID);
+            if(sessionStorage.getItem("statusConsole") === 'true') {
+                console.log(statusLoading, nameID);
+            }
+        }
+
+        // Alterando propriedades Menu Oculto...
         if(X == 5) {
-            //Alterando propriedades Menu Oculto
-            const statusMOculto = await changeCSSOculto(constArray);
-            console.log(statusMOculto, nameID);
+            const statusLoading = await changeCSSOculto(varsArray);
+            if(sessionStorage.getItem("statusConsole") === 'true') {
+                console.log(statusLoading, nameID);
+            }
+        }
+
+        sessionStorage.setItem("nameID", nameID);
+        sessionStorage.setItem("X", X);
+
+        //Atualizando stilos CSS
+        if(nameID == "home") {
+            const statusCSS = await abaHome(varsArray, nameID);
+            if(sessionStorage.getItem("statusConsole") === 'true') {
+                console.log(statusCSS);
+            }
+        }
+
+        if(nameID == "historico") {
+            const statusCSS = await abaHistorico(varsArray, nameID);
+            if(sessionStorage.getItem("statusConsole") === 'true') {
+                console.log(statusCSS);
+            } 
+        }
+
+        if(nameID == "contato") {
+            const statusCSS = await abaContato(varsArray, nameID);
+            if(sessionStorage.getItem("statusConsole") === 'true') {
+                console.log(statusCSS);
+            }
+        }
+
+        if(nameID == "politica") {
+            const statusCSS = await abaPolitica(varsArray, nameID);
+            if(sessionStorage.getItem("statusConsole") === 'true') {
+                console.log(statusCSS);
+            }
+        }
+
+        if(nameID == "updates") {
+            const statusCSS = await abaUpdates(varsArray, nameID);
+            if(sessionStorage.getItem("statusConsole") === 'true') {
+                console.log(statusCSS);
+            }
+        }
+
+        if(nameID == "software") {
+            const statusCSS = await abaSoft(varsArray, nameID);
+            if(sessionStorage.getItem("statusConsole") === 'true') {
+                console.log(statusCSS);
+            }
+        }
+
+        //Condição Base href Environment
+        const currentEnvironment = sessionStorage.getItem("proEnvironment")
+        const intproEnvironment = parseInt(currentEnvironment)
+        let baseURL = null;
+        if (intproEnvironment === -1) {
+            baseURL = "/";
+        } else if (intproEnvironment === 0) {
+            baseURL = "/testefiles/";
+        } else if (intproEnvironment === 1) {
+            baseURL = "/criacao-de-sites/";
         }
 
         //Condição para roteamento de links - Live Server
         if(window.location.origin == "http://127.0.0.1:5500") {
             history.pushState({ Page: nameID }, nameID, '');
-            console.log(window.history.state, "Internal Pages");
+            if(sessionStorage.getItem("statusConsole") === 'true') {
+                console.log(window.history.state, "Internal Pages Live Server");
+            } 
 
         //Condição para roteamento de links - Servidor    
         } else {
-            let urlID = `/criacao-de-sites/${nameID}`;
+            let urlID = `${baseURL}${nameID}`;
             const statusURL = await roteadorURL(1, urlID);
-            console.log(statusURL);
+            if(sessionStorage.getItem("statusConsole") === 'true') {
+                console.log(statusURL);
+            }
         }
         
-
         //Caminho para atualização DOM
-        let SRCiframe = `assets/HTML/${nameID}.html`;
-        console.log(SRCiframe, "Caminho para Atualizar DOM");
-
-        //Atualizando Documentação iFrame
-        const statusDOM = await atualizaIframe(SRCiframe, nameID);
-        console.log(statusDOM, nameID);
-
-        //Atualizando stilos CSS
-        if(nameID == "home") {
-            const statusCSS = await abaHome(constArray, nameID);
-            console.log(statusCSS);
+        let SRCiframe = `${baseURL}assets/HTML/${nameID}.html`;
+        if (SRCiframe) {
+            const statusDOM = await atualizaIframe(SRCiframe);
+            if(sessionStorage.getItem("statusConsole") === 'true') {
+                console.log(statusDOM, nameID);
+            }
+            return 
         }
+    })
+}
 
-        if(nameID == "historico") {
-            const statusCSS = await abaHistorico(constArray, nameID);
-            console.log(statusCSS);
-        }
-
-        if(nameID == "contato") {
-            const statusCSS = await abaContato(constArray, nameID);
-            console.log(statusCSS);
-        }
-
-        if(nameID == "politica") {
-            const statusCSS = await abaPolitica(constArray, nameID);
-            console.log(statusCSS);
-        }
-
-        if(nameID == "updates") {
-            const statusCSS = await abaUpdates(constArray, nameID);
-            console.log(statusCSS);
-        }
+// Função principal para operação páginas internas conclusão!
+export async function endsOp(nameID, X, varsArray, iframeDoc) {
+    return new Promise(async (resolve) => {
         
-        //Atualizando altura do iframe
-        const statusAltura = await alteraAlturaIframe();
-        console.log(statusAltura, nameID);
+        if(sessionStorage.getItem("statusConsole") === 'true') {
+            console.log(`%cFinalizando Operação páginas internas após sinal DOM ${nameID}`, "text-decoration: underline")
+        }
 
         //Capturando objetos específicos
         if(nameID == "home") {
-            let btnMainAction = statusAltura.querySelector(".main-btn");
-            let btnContatoAction = statusAltura.querySelector(".ctt-btn");
-            console.log(btnMainAction);
-            console.log(btnContatoAction);
-    
+            let btnMainAction = iframeDoc.querySelector(".main-btn");
+            let btnContatoAction = iframeDoc.querySelector(".ctt-btn");
+            if(sessionStorage.getItem("statusConsole") === 'true') {
+                console.log(btnMainAction);
+                console.log(btnContatoAction);
+            }
+            
             //Capturando event click btn Main ação
             if (btnMainAction) {
                 btnMainAction.addEventListener("click", async function() {
@@ -175,8 +227,10 @@ export async function startOperations(nameID, X, constArray) {
 
         //Capturando objetos específicos
         if(nameID == "historico") {
-            let btnHistoricoAction = statusAltura.querySelector(".hist-btn");
-            console.log(btnHistoricoAction);
+            let btnHistoricoAction = iframeDoc.querySelector(".hist-btn");
+            if(sessionStorage.getItem("statusConsole") === 'true') {
+                console.log(btnHistoricoAction);
+            }
 
             //Capturando event click btn ação
             if (btnHistoricoAction) {
@@ -189,8 +243,10 @@ export async function startOperations(nameID, X, constArray) {
 
         //Capturando objetos específicos
         if(nameID == "updates") {
-            let btnUpdatesAction = statusAltura.querySelector(".up-btn");
-            console.log(btnUpdatesAction);
+            let btnUpdatesAction = iframeDoc.querySelector(".up-btn");
+            if(sessionStorage.getItem("statusConsole") === 'true') {
+                console.log(btnUpdatesAction);
+            }
 
             //Capturando event click btn ação
             if (btnUpdatesAction) {
@@ -203,8 +259,10 @@ export async function startOperations(nameID, X, constArray) {
 
         //Capturando objetos específicos
         if(nameID == "contato") {
-            let btnContatoAction = statusAltura.querySelector(".sa-btn");
-            console.log(btnContatoAction);
+            let btnContatoAction = iframeDoc.querySelector(".sa-btn");
+            if(sessionStorage.getItem("statusConsole") === 'true') {
+                console.log(btnContatoAction);
+            }
 
             //Capturando event click btn ação
             if (btnContatoAction) {
@@ -214,38 +272,90 @@ export async function startOperations(nameID, X, constArray) {
                 })
             }
         }
+        
+        // Turn Drop On
+        const divDropMenu = document.querySelector(".dropdown-content")
+        divDropMenu.style.opacity = "";
+        divDropMenu.style.visibility = "";
+        if(sessionStorage.getItem("statusConsole") === 'true') {
+            console.log("Drop Ativo!")
+        }
+
+        // Analisando Scroll Page Status
+        if(sessionStorage.getItem("scrollStatus") === 'true') {
+
+            //Ancorando Scroll Page
+            setTimeout(async () => {
+                const pageStatusScroll = await scrollScreenTopic(sessionStorage.getItem("value"))
+                if(sessionStorage.getItem("statusConsole") === 'true') {
+                    console.log(pageStatusScroll, nameID);
+                    sessionStorage.setItem("scrollStatus", false);
+                }
+            }, 1200)
+        }
+
+        //Atualizando altura do iframe
+        const statusAltura = await alteraAlturaIframe();
+        if(sessionStorage.getItem("statusConsole") === 'true') {
+            console.log(statusAltura, nameID);
+        }
 
         //Encerrando Screen Loading...
         if(X == 0 || X == 13 || X == 20) {
             const statusOff = await offLoadingScreen(nameID);
-            console.log(statusOff, nameID);
+            if(sessionStorage.getItem("statusConsole") === 'true') {
+                console.log(statusOff, nameID);
+            }
             if(X == 0) {
-                console.log(`Botão ${nameID} nav bar pronto!`);
+                if(sessionStorage.getItem("statusConsole") === 'true') {
+                    console.log(`Botão ${nameID} nav bar pronto!`);
+                }
             }
 
             if(X == 13) {
-                console.log(`Botão ${nameID} footer pronto!`)
+                if(sessionStorage.getItem("statusConsole") === 'true') {
+                    console.log(`Botão ${nameID} footer pronto!`)
+                }
             }
 
             if(X == 20) {
-                console.log(`Botão ${nameID} footer tópicos pronto!`)
+                if(sessionStorage.getItem("statusConsole") === 'true') {
+                    console.log(`Botão ${nameID} Frame pronto!`)
+                }
             }
         }
 
         //Fechando Menu Oculto após carregamento!
         if(X == 5) {
-            const statusOff = await closeHideMenu(constArray, 800);
-            console.log(statusOff, nameID);
+            const statusOff = await closeHideMenu(varsArray, 800);
+            if(sessionStorage.getItem("statusConsole") === 'true') {
+                console.log(statusOff, nameID);
+            }
 
             //Alterando propriedades Menu Oculto
-            const statusEndOculto = await retornaCSSOculto(constArray);
-            console.log(statusEndOculto, nameID);
-            console.log(`Configs ${nameID} menu oculto pronto!`);
+            const statusEndOculto = await retornaCSSOculto(varsArray);
+            if(sessionStorage.getItem("statusConsole") === 'true') {
+                console.log(statusEndOculto, nameID);
+            }
         }
-        
-        resolve("FIM");
+        resolve("FIM")
         
     });
-}    
+}
+
+// Função para tornar invisivel Drop Down Menu
+export async function turnOFFDrop() {
+    return new Promise(async (resolve) => {
+        
+        //console.log("Escondendo Drop Down Menu")
+        const divDropMenu = document.querySelector(".dropdown-content")
+        divDropMenu.style.opacity = 0;
+        divDropMenu.style.visibility = "hidden";
+        if(sessionStorage.getItem("statusConsole") === 'true') {
+            console.log(divDropMenu);
+        }
+        resolve("Drop OFF Stats")
+    })
+}
 
 

@@ -10,6 +10,11 @@
             const intlocalEnvironment = parseInt(islocalEnvironment)
             const resultInt = (intlocalEnvironment === 1)
             const resultADM = (statusADM === 'true');
+            
+            if(sessionStorage.getItem("statusConsole") === 'true') {
+                console.log("Environment: ", resultInt);
+                console.log("ADM: ", resultADM);
+            } 
 
             if (resultInt === true && resultADM === false) {
                 
@@ -39,11 +44,35 @@
                     j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
                 })(window,document,'script','dataLayer','GTM-KDCXQ28J');
 
-                console.log("Home.html: GA4 e GTM habilitados para essa sessão!");
+                
+                if(sessionStorage.getItem("statusConsole") === 'true') {
+                    console.log("home.html: GA4 e GTM habilitados para essa sessão!");
+                } 
             } else {
-                console.log("Home.html: Ambiente de testes ou ADM em produção, não habilitar TAGS Google!")
+                if(sessionStorage.getItem("statusConsole") === 'true') {
+                    console.log("home.html: Ambiente de testes ou ADM em produção, não habilitar TAGS Google!")
+                }
             }
         </script>
+
+        <script>
+            const currentEnvironment = sessionStorage.getItem("proEnvironment")
+            const intproEnvironment = parseInt(currentEnvironment)
+            const linkElement = document.createElement('link');
+            linkElement.rel = 'stylesheet';
+            linkElement.type = 'text/css';
+            if (intproEnvironment === -1) { //Live Server
+                linkElement.href = "/assets/CSS/1-home/0-home.css";
+            } else if (intproEnvironment === 0) { //testefiles
+                linkElement.href = "/testefiles/assets/CSS/1-home/0-home.css";
+            } else if (intproEnvironment === 1) {
+                linkElement.href = "/criacao-de-sites/assets/CSS/1-home/0-home.css";
+            }
+            document.head.appendChild(linkElement);
+            if(sessionStorage.getItem("statusConsole") === 'true') {
+                console.log("LinkElement: ", linkElement)
+            }
+        </script>        
 
         <meta charset="UTF-8">
         <meta 
@@ -60,10 +89,6 @@
             content="criação de sites, desenvolvimento web, web designer Curitiba, sites profissionais, orçamento sites">
 
         <title>Criação de Sites em Curitiba | Ewerton Santos - Web Designer Profissional</title>
-
-        <link 
-            rel="stylesheet" 
-            href="../CSS/1-home/0-home.css">
 
         <link rel="stylesheet" 
         href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
@@ -92,9 +117,13 @@
                 noScript.appendChild(eliframe)
                 document.body.prepend(noScript)
 
-                console.log("Home.html: Iframe GTM ativo!!!")
+                if(sessionStorage.getItem("statusConsole") === 'true') {
+                    console.log("sobre.html: Iframe GTM ativo!!!")
+                }
             } else {
-                console.log("Home.html: Iframe noscript GTM desativado!")
+                if(sessionStorage.getItem("statusConsole") === 'true') {
+                    console.log("sobre.html: Iframe noscript GTM desativado!")
+                }
             }
         </script>
         
@@ -277,6 +306,37 @@
             </div>
 
         </section>
+
+        <script>
+            // Função para notificar o documento pai que o conteúdo do iframe está pronto
+            function notifyParentIframeReady() {
+                // Verifica se a janela atual está dentro de um iframe e se tem um pai
+                if (window.parent && window.parent !== window) {
+                    
+                    //Definindo Domínio Atual
+                    const currentDomain = sessionStorage.getItem("currentDomain")
+
+                    // Permissions Origins
+                    const parentOrigins = [
+                        currentDomain
+                    ];
+
+                    //Enviando sinal para origem
+                    parentOrigins.forEach(origin => {
+                        window.parent.postMessage('iframeContentReady', origin); 
+                        if(sessionStorage.getItem("statusConsole") === 'true') {
+                            console.log(`%cTentando enviar 'iframeContentReady' para origem: ${origin}`, "color: gray;");
+                        }
+                    })
+
+                    // Status
+                    if(sessionStorage.getItem("statusConsole") === 'true') {
+                        console.log("%cNotificação 'iframeContentReady' enviada para o pai (verifique o console do pai para confirmação).", "color: blue;");
+                    }
+                }
+            }
+            window.addEventListener('load', notifyParentIframeReady);
+        </script>
     </body>
 
 </html>

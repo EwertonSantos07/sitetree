@@ -25,14 +25,17 @@ header {
     box-sizing: border-box;
     border: 0px solid white;
     display: flex;
+    flex-grow: 0;
     flex-wrap: wrap;
     flex-direction: row;
     width: auto;
     height: auto;
     justify-content: space-evenly;
     margin: 0;
+    margin-left: 33%;
     padding: 0;
     transition-duration: 0.8s;
+    text-align: center;
 }
 
 .navbar-text {
@@ -58,8 +61,38 @@ header {
     cursor: pointer;
 }
 
-@media only screen and (max-width: 370px) {
+.media-info-head {
+    box-sizing: border-box;
+    border: 0px solid white;
+    color: white;
+    text-decoration: none;
+    font-size: 1.3rem;
+    font-family: 
+        "League Gothic", sans-serif;
+    font-weight: normal;
+    text-align: center;
+    margin-left: auto;
+    margin-right: 30px;
+    padding: 0;
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+.fa {
+    color: yellow;
+}
+
+@media only screen and (max-width: 902px) {
     .navbar {
         display: none;
+    }
+
+    .media-info-head {
+        order: 0;
+        margin: 0;
+    }
+
+    header {
+        flex-direction: column;
     }
 }

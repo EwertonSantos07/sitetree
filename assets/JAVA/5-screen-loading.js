@@ -1,5 +1,3 @@
-// Tela de Carregamento
-
 //Função para abrir tela de carregamento
 export async function showLoadingScreen(operationID) {
     return new Promise((resolve) => {

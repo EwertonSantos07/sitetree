@@ -13,6 +13,7 @@
     margin: 0;
     padding: 0;
     transition-duration: 0.8s;
+    margin-left: 50%;
 }
 
 .close-menu {
@@ -101,8 +102,10 @@
     transition-duration: 0.8s;
 }
 
-@media only screen and (max-width: 370px) {
+@media only screen and (max-width: 902px) {
     .open-menu {
         display: flex;
+        order: 1;
+        margin: 0;
     }
 }

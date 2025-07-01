@@ -7,6 +7,7 @@ export async function changeCSSOculto(listOculto) {
         listOculto[10].style.display = "none"; //Blog
         listOculto[26].style.display = "none"; //Updates
         listOculto[11].style.display = "none"; //Contato
+        listOculto[29].style.display = "none";//Software Dropdown
         listOculto[12].style.display = "flex"; //Loading...
         listOculto[12].style.cursor = "wait";
 
@@ -24,6 +25,7 @@ export async function retornaCSSOculto(listOculto) {
         listOculto[10].style.display = ""; //Blog
         listOculto[26].style.display = ""; //Updates
         listOculto[11].style.display = ""; //Contato
+        listOculto[29].style.display = "";//Software Dropdown
         listOculto[12].style.display = "none"; //Loading...
         listOculto[12].style.cursor = "";
 

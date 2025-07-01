@@ -46,11 +46,11 @@
 
                 
                 if(sessionStorage.getItem("statusConsole") === 'true') {
-                    console.log("historico.html: GA4 e GTM habilitados para essa sessão!");
+                    console.log("software.html: GA4 e GTM habilitados para essa sessão!");
                 } 
             } else {
                 if(sessionStorage.getItem("statusConsole") === 'true') {
-                    console.log("historico.html: Ambiente de testes ou ADM em produção, não habilitar TAGS Google!")
+                    console.log("software.html: Ambiente de testes ou ADM em produção, não habilitar TAGS Google!")
                 }
             }
         </script>
@@ -62,17 +62,17 @@
             linkElement.rel = 'stylesheet';
             linkElement.type = 'text/css';
             if (intproEnvironment === -1) { //Live Server
-                linkElement.href = "/assets/CSS/2-historico/0-historico.css";
+                linkElement.href = "/assets/CSS/6-software/0-index.css";
             } else if (intproEnvironment === 0) { //testefiles
-                linkElement.href = "/testefiles/assets/CSS/2-historico/0-historico.css";
+                linkElement.href = "/testefiles/assets/CSS/6-software/0-index.css";
             } else if (intproEnvironment === 1) {
-                linkElement.href = "/criacao-de-sites/assets/CSS/2-historico/0-historico.css";
+                linkElement.href = "/criacao-de-sites/assets/CSS/6-software/0-index.css";
             }
             document.head.appendChild(linkElement);
             if(sessionStorage.getItem("statusConsole") === 'true') {
                 console.log("LinkElement: ", linkElement)
             }
-        </script>
+        </script>        
 
         <meta charset="UTF-8">
         <meta 
@@ -82,13 +82,13 @@
 
         <meta
             name="description"
-            content="Ewerton Santos é um profissional especializado em criação de sites em Curitiba, PR. Desenvolvemos websites personalizados e responsivos para empresas e indivíduos. Solicite um orçamento!">
+            content="Desenvolvimento de Sistemas de Gestão Empresarial">
 
         <meta 
             name="keywords" 
             content="criação de sites, desenvolvimento web, web designer Curitiba, sites profissionais, orçamento sites">
 
-        <title>Histórico de Criação de Sites | Ewerton Santos - Web Designer Profissional</title>
+        <title>Software</title>
 
         <link rel="stylesheet" 
         href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
@@ -118,121 +118,16 @@
                 document.body.prepend(noScript)
 
                 if(sessionStorage.getItem("statusConsole") === 'true') {
-                    console.log("sobre.html: Iframe GTM ativo!!!")
+                    console.log("software.html: Iframe GTM ativo!!!")
                 }
             } else {
                 if(sessionStorage.getItem("statusConsole") === 'true') {
-                    console.log("sobre.html: Iframe noscript GTM desativado!")
+                    console.log("software.html: Iframe noscript GTM desativado!")
                 }
             }
         </script>
-
-        <!-- Section Provisório aviso Manutenção -->
-        <section
-            id="historico-de-trabalhos"
-            data-link="historico-de-trabalhos"
-            class="section-historico">
         
-            <h3 class="hi-h3">
-                Histórico de Trabalhos
-            </h3>
-
-            <div class="hi-div-prompt">
-                <p class="hi-p-aviso">
-                    C:\Aviso> Conexão com banco de dados sendo configurada, volte mais tarde...
-                </p>
-            </div>
-
-            <button class="hist-btn">
-                &lt;
-                <i class="fa">
-                    &#xf232;
-                </i>
-                Informações &gt;
-            </button>
-        
-        </section>
-
-        <!-- Section Clientes -->
-        <!-- <section 
-            id="historico-de-trabalhos" 
-            data-link="historico-de-trabalhos" 
-            class="section-historico">
-            
-            <h3 class="hi-h3">
-                Histórico de Trabalhos
-            </h3>
-
-            <div class="hi-div-infos">
-                <img 
-                    class="hi-img"
-                    src= ""
-                    alt="">
-                
-                <p class="hi-p">
-                    <span
-                        id="content-descricao"></span>
-                    <a 
-                        id="content-link"
-                        href="" 
-                        target="_blank" 
-                        title="">
-                        Clique aqui e saiba mais.
-                    </a>
-                </p>
-            </div>
-
-        </section> -->
-
-        <!-- <script>
-
-            //IP para teste local: 127.0.0.1
-            //IP para teste no servidor: 192.168.15.38
-            //const ipLocal = '127.0.0.1'; //Localhost
-            //const ipLocal = '191.255.186.168'; //IP Público Dinâmico
-            const ipLocal = "techinfo.webredirect.org" //Sub-domínio
-            const urlConteudo = `https://${ipLocal}:5000/api/conteudo`;
-
-            // Função para buscar e exibir dados de texto
-            async function buscarConteudo() {
-                return new Promise(async (resolve) => {
-                    const response = await fetch(urlConteudo)
-                    console.log("Resposta:", response)
-                    console.log("Continuando...")
-
-                    if (!response.ok) {
-                        throw new Error(`Erro na requisição: ${response.status} - ${response.statusText}`);
-                    }
-
-                    const retrive_data = await response.json();
-                    console.log("Dados recebidos:", retrive_data); 
-                    console.log("ID: ", retrive_data.ID); 
-
-                    document.getElementById('content-descricao').textContent = retrive_data.DESCRICAO;
-                    const cliqueAqui = document.getElementById("content-link")
-                    cliqueAqui.href = retrive_data.LINK_OFICIAL;
-                    resolve(retrive_data.PATH_LOGO)
-                })
-            }
-
-            // Função para buscar e exibir dados de imagem
-            async function buscarImgPath(ip, PathImg) {
-                return new Promise(async (resolve) => {
-                    const urlLogo = `https://${ipLocal}:5000/logos/${PathImg}`;
-                    const response2 = await fetch(urlLogo)
-                    console.log(response2)
-
-                    const imgID = document.querySelector(".hi-img")
-                    imgID.src = urlLogo
-                })
-            }
-                
-            // Chamar as funções quando a página carregar
-            window.onload = async function() {
-                const pathImagem = await buscarConteudo();
-                const indexImg = await buscarImgPath(ipLocal, pathImagem);
-            };
-        </script> -->
+        <p class="temporario-p-element">ESTÁ PÁGINA ESTÁ SENDO PREPARADA!!!</p>
 
         <script>
             // Função para notificar o documento pai que o conteúdo do iframe está pronto

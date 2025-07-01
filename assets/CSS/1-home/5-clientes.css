@@ -80,6 +80,10 @@
     cursor: text;
 }
 
+section#section-dos-clientes {
+    scroll-margin-top: -80px;
+}
+
 @media only screen and (max-width: 727px) {
     .sc-div-infos {
         display: flex;
